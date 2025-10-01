@@ -1,13 +1,13 @@
-## Resume site for personal development
+# Resume site for personal development
 
-# Tech Stack
+## Tech Stack
 - React
 - Typescript
 - Speed Web Compiler (SWC)
 - Node Package Manager (NPM)
 - Node.js v22.12.0 (requires v20.19+ or v22.12+)
 
-# Running Project
+## Running Project
 
 ```console
 npm run dev
