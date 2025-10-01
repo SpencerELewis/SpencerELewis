@@ -1,0 +1,10 @@
+{
+  "name": "spencer-e-lewis",
+  "version": "1.0.0",
+  "description": "Personal development projects",
+  "scripts": {
+    "dev": "cd resume-site && npm run dev",
+    "build": "cd resume-site && npm run build",
+    "install-dev": "cd resume-site && npm install && npm run dev"
+  }
+}
