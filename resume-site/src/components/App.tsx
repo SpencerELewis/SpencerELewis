@@ -29,6 +29,24 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
+
+      <div>
+        <h1>Scroll Test</h1>
+        <h1>Scroll Test</h1>
+        <h1>Scroll Test</h1>
+        <h1>Scroll Test</h1>
+        <h1>Scroll Test</h1>
+        <h1>Scroll Test</h1>
+        <h1>Scroll Test</h1>
+        <h1>Scroll Test</h1>
+        <h1>Scroll Test</h1>
+        <h1>Scroll Test</h1>
+        <h1>Scroll Test</h1>
+        <h1>Scroll Test</h1>
+        <h1>Scroll Test</h1>
+        <h1>Scroll Test</h1>
+        <h1>Scroll Test</h1>
+      </div>
     </>
   )
 }
