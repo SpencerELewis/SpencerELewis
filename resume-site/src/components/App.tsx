@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import '../styles/App.css'
+import Header from './Header'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
+      <Header />
       <div>
         <a href="https://vite.dev" target="_blank">
         </a>
@@ -14,7 +16,10 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        <button 
+          className="btn btn-primary" 
+          onClick={() => setCount((count) => count + 1)}
+        >
           count is {count}
         </button>
         <p>
