@@ -23,8 +23,8 @@ function Header() {
                 src={profilePic} 
                 alt="Spencer Lewis Picture" 
                 roundedCircle 
-                className={`${isScrolled ? 'w-25' : 'w-50'}`}
-                style={{ maxWidth: isScrolled ? '60px' : '200px' }}
+                className={`${isScrolled ? 'w-25' : 'w-50'}`} //Changes width % based on if the user has scrolled down or not
+                style={{ maxWidth: isScrolled ? '60px' : '200px' }} //Changes width MAX based on if the user has scrolled down or not
             />
         </header>
     );
