@@ -38,6 +38,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background-color: var(--bs-body-bg);
+  transition: all 0.3s ease;
 }
 
 #root {
@@ -45,4 +46,21 @@ body {
   display: flex;
   flex-direction: column;
   background-color: var(--bs-body-bg);
+  transition: all 0.3s ease;
+}
+
+/* Prevent nav links from changing color on focus/active */
+.navbar .nav-link:focus,
+.navbar .nav-link:active {
+  color: var(--bs-navbar-color) !important;
+}
+
+[data-bs-theme="light"] .navbar .nav-link:focus,
+[data-bs-theme="light"] .navbar .nav-link:active {
+  color: rgba(0, 0, 0, 0.55) !important;
+}
+
+[data-bs-theme="dark"] .navbar .nav-link:focus,
+[data-bs-theme="dark"] .navbar .nav-link:active {
+  color: #e0e0e0 !important;
 }
