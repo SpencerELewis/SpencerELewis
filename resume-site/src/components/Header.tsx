@@ -53,13 +53,12 @@ function Header() {
     };
 
     // Responsive breakpoints
-    // Adjusted breakpoints for later hiding
-    const hideNavText = windowWidth < 750;
-    const hideDarkMode = windowWidth < 600;
-    const hideSocial = windowWidth < 480;
+    // Hide nav text at 750px, hide all right icons (social+darkmode) at 600px
+    const hideNavText = windowWidth < 600;
+    const hideRightIcons = windowWidth < 400;
 
-    // Center icons only when both dark mode and social icons are hidden (only nav icons remain)
-    const onlyIcons = hideNavText && hideDarkMode && hideSocial;
+    // Center icons only when right icons are hidden and nav text is hidden
+    const onlyIcons = hideNavText && hideRightIcons;
 
     return (
         <div style={{
@@ -187,8 +186,8 @@ function Header() {
                             {!hideNavText && 'Resume'}
                         </Nav.Link>
                     </Nav>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        {!hideSocial && (
+                    {!hideRightIcons && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                             <a
                                 href="https://www.linkedin.com/in/spencer-e-lewis/"
                                 target="_blank"
@@ -216,8 +215,6 @@ function Header() {
                                     }}
                                 />
                             </a>
-                        )}
-                        {!hideSocial && (
                             <a
                                 href="https://github.com/SpencerELewis"
                                 target="_blank"
@@ -245,8 +242,6 @@ function Header() {
                                     }}
                                 />
                             </a>
-                        )}
-                        {!hideDarkMode && (
                             <Button
                                 variant={isDarkMode ? 'light' : 'dark'}
                                 onClick={toggleTheme}
@@ -274,8 +269,8 @@ function Header() {
                                     }}
                                 />
                             </Button>
-                        )}
-                    </div>
+                        </div>
+                    )}
                 </Container>
             </Navbar>
         </div>
