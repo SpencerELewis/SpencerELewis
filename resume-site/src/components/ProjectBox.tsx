@@ -4,11 +4,12 @@ import ProjectModal from './ProjectModal';
 interface ProjectBoxProps {
     title: string;
     description: string;
+    modalDescription?: string;
     image: string;
     images?: string[]; // for modal, optional
 }
 
-const ProjectBox: React.FC<ProjectBoxProps> = ({ title, description, image, images }) => {
+const ProjectBox: React.FC<ProjectBoxProps> = ({ title, description, modalDescription, image, images }) => {
     const [showModal, setShowModal] = useState(false);
     const [hovered, setHovered] = useState(false);
     return (
@@ -43,7 +44,7 @@ const ProjectBox: React.FC<ProjectBoxProps> = ({ title, description, image, imag
                 show={showModal}
                 onClose={() => setShowModal(false)}
                 title={title}
-                description={description}
+                description={modalDescription ?? description}
                 images={images ? [image, ...images] : [image]}
             />
         </>

@@ -9,6 +9,7 @@ function Projects() {
                 <ProjectBox
                     title="JerichOS"
                     description="A x86 Operating System currently in development."
+                    modalDescription="JerichOS is a custom x86 operating system project, built from scratch to explore low-level systems programming, memory management, and hardware interfacing. Features include a custom bootloader, basic multitasking, a simple shell, and FAT file system support. Developed in C and Assembly, JerichOS is a learning platform for OS concepts and hardware-software integration."
                     image="/assets/vr-gallery-thumb.jpg"
                     images={["/assets/vr-gallery-1.jpg", "/assets/vr-gallery-2.jpg"]}
                 />
