@@ -60,6 +60,11 @@ function Home() {
             Explore my projects and experience across various technologies and frameworks.
             I'm passionate about building innovative solutions and continuously learning new tools.
           </p>
+          <h1>About Me</h1>
+          <p>
+            I am a software developer with a strong background in various technologies and frameworks.
+            I enjoy tackling challenging problems and creating efficient, scalable solutions.
+          </p>
         </div>
       </Container>
   )
