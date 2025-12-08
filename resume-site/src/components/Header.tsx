@@ -17,7 +17,7 @@ function Header() {
 
     useEffect(() => {
         const htmlElement = document.documentElement;
-        
+
         if (isDarkMode) {
             htmlElement.setAttribute('data-bs-theme', 'dark');
             htmlElement.style.colorScheme = 'dark';
@@ -25,7 +25,7 @@ function Header() {
             htmlElement.setAttribute('data-bs-theme', 'light');
             htmlElement.style.colorScheme = 'light';
         }
-        
+
         localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
     }, [isDarkMode]);
 
@@ -62,16 +62,16 @@ function Header() {
     const onlyIcons = hideNavText && hideDarkMode && hideSocial;
 
     return (
-        <div style={{ 
+        <div style={{
             padding: isScrolled ? '0.5rem 1rem' : '1rem 1rem 0 1rem',
             transition: 'padding 0.3s ease',
             position: 'sticky',
             top: 0,
             zIndex: 1000
         }}>
-            <Navbar 
-                bg={isDarkMode ? 'dark' : 'light'} 
-                variant={isDarkMode ? 'dark' : 'light'} 
+            <Navbar
+                bg={isDarkMode ? 'dark' : 'light'}
+                variant={isDarkMode ? 'dark' : 'light'}
                 className="shadow"
                 style={{
                     borderRadius: isScrolled ? '15px' : '20px',
@@ -81,9 +81,9 @@ function Header() {
             >
                 <Container fluid className={isScrolled ? 'px-3' : 'px-4'} style={{ transition: 'padding 0.3s ease' }}>
                     <Nav className={onlyIcons ? 'mx-auto' : 'me-auto'} style={onlyIcons ? { justifyContent: 'center', width: '100%' } : {}}>
-                        <Nav.Link 
-                            as={Link} 
-                            to="/" 
+                        <Nav.Link
+                            as={Link}
+                            to="/"
                             className="px-3"
                             style={{
                                 display: 'flex',
@@ -102,12 +102,12 @@ function Header() {
                             onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
                             onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
                         >
-                            <img 
-                                src='/Favicon_Home_Black.svg' 
-                                alt="Home" 
-                                style={{ 
-                                    width: isScrolled ? '20px' : '24px', 
-                                    height: isScrolled ? '20px' : '24px', 
+                            <img
+                                src='/Favicon_Home_Black.svg'
+                                alt="Home"
+                                style={{
+                                    width: isScrolled ? '20px' : '24px',
+                                    height: isScrolled ? '20px' : '24px',
                                     display: 'block',
                                     transition: 'all 0.3s ease',
                                     filter: isDarkMode ? 'invert(1) brightness(0.75)' : 'invert(0) brightness(0) saturate(100%) opacity(0.55)',
@@ -116,9 +116,9 @@ function Header() {
                             />
                             {!hideNavText && 'Home'}
                         </Nav.Link>
-                        <Nav.Link 
-                            as={Link} 
-                            to="/projects" 
+                        <Nav.Link
+                            as={Link}
+                            to="/projects"
                             className="px-3"
                             style={{
                                 display: 'flex',
@@ -137,12 +137,12 @@ function Header() {
                             onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
                             onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
                         >
-                            <img 
-                                src='/favicon_project.png' 
-                                alt="Projects" 
-                                style={{ 
-                                    width: isScrolled ? '20px' : '24px', 
-                                    height: isScrolled ? '20px' : '24px', 
+                            <img
+                                src='/favicon_project.png'
+                                alt="Projects"
+                                style={{
+                                    width: isScrolled ? '20px' : '24px',
+                                    height: isScrolled ? '20px' : '24px',
                                     display: 'block',
                                     transition: 'all 0.3s ease',
                                     filter: isDarkMode ? 'invert(1) brightness(0.75)' : 'invert(0) brightness(0) saturate(100%) opacity(0.55)',
@@ -151,9 +151,9 @@ function Header() {
                             />
                             {!hideNavText && 'Projects'}
                         </Nav.Link>
-                        <Nav.Link 
-                            as={Link} 
-                            to="/resume" 
+                        <Nav.Link
+                            as={Link}
+                            to="/resume"
                             className="px-3"
                             style={{
                                 display: 'flex',
@@ -172,12 +172,12 @@ function Header() {
                             onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
                             onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
                         >
-                            <img 
-                                src='/favicon_resume.png' 
-                                alt="Resume" 
-                                style={{ 
-                                    width: isScrolled ? '20px' : '24px', 
-                                    height: isScrolled ? '20px' : '24px', 
+                            <img
+                                src='/favicon_resume.png'
+                                alt="Resume"
+                                style={{
+                                    width: isScrolled ? '20px' : '24px',
+                                    height: isScrolled ? '20px' : '24px',
                                     display: 'block',
                                     transition: 'all 0.3s ease',
                                     filter: isDarkMode ? 'invert(1) brightness(0.75)' : 'invert(0) brightness(0) saturate(100%) opacity(0.55)',
@@ -189,9 +189,9 @@ function Header() {
                     </Nav>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         {!hideSocial && (
-                            <a 
-                                href="https://www.linkedin.com/in/spencer-e-lewis/" 
-                                target="_blank" 
+                            <a
+                                href="https://www.linkedin.com/in/spencer-e-lewis/"
+                                target="_blank"
                                 rel="noopener noreferrer"
                                 style={{
                                     display: 'flex',
@@ -204,12 +204,12 @@ function Header() {
                                 onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
                                 onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
                             >
-                                <img 
-                                    src='/favicon_linkedin.png' 
-                                    alt="LinkedIn" 
-                                    style={{ 
-                                        width: isScrolled ? '20px' : '24px', 
-                                        height: isScrolled ? '20px' : '24px', 
+                                <img
+                                    src='/favicon_linkedin.png'
+                                    alt="LinkedIn"
+                                    style={{
+                                        width: isScrolled ? '20px' : '24px',
+                                        height: isScrolled ? '20px' : '24px',
                                         display: 'block',
                                         transition: 'all 0.3s ease',
                                         filter: isDarkMode ? 'invert(1) brightness(0.75)' : 'invert(0) brightness(0) saturate(100%) opacity(0.55)'
@@ -218,9 +218,9 @@ function Header() {
                             </a>
                         )}
                         {!hideSocial && (
-                            <a 
-                                href="https://github.com/SpencerELewis" 
-                                target="_blank" 
+                            <a
+                                href="https://github.com/SpencerELewis"
+                                target="_blank"
                                 rel="noopener noreferrer"
                                 style={{
                                     display: 'flex',
@@ -233,12 +233,12 @@ function Header() {
                                 onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
                                 onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
                             >
-                                <img 
-                                    src='/favicon_github.png' 
-                                    alt="GitHub" 
-                                    style={{ 
-                                        width: isScrolled ? '20px' : '24px', 
-                                        height: isScrolled ? '20px' : '24px', 
+                                <img
+                                    src='/favicon_github.png'
+                                    alt="GitHub"
+                                    style={{
+                                        width: isScrolled ? '20px' : '24px',
+                                        height: isScrolled ? '20px' : '24px',
                                         display: 'block',
                                         transition: 'all 0.3s ease',
                                         filter: isDarkMode ? 'invert(1) brightness(0.75)' : 'invert(0) brightness(0) saturate(100%) opacity(0.55)'
@@ -247,12 +247,12 @@ function Header() {
                             </a>
                         )}
                         {!hideDarkMode && (
-                            <Button 
+                            <Button
                                 variant={isDarkMode ? 'light' : 'dark'}
-                                onClick={toggleTheme} 
+                                onClick={toggleTheme}
                                 className="p-2"
-                                style={{ 
-                                    width: isScrolled ? '32px' : '40px', 
+                                style={{
+                                    width: isScrolled ? '32px' : '40px',
                                     height: isScrolled ? '32px' : '40px',
                                     display: 'flex',
                                     alignItems: 'center',
@@ -263,12 +263,12 @@ function Header() {
                                 onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
                                 onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
-                                <img 
-                                    src={isDarkMode ? '/favicon_darkmode.png' : '/favicon_lightmode (2).png'} 
-                                    alt="Toggle theme" 
-                                    style={{ 
-                                        width: isScrolled ? '18px' : '24px', 
-                                        height: isScrolled ? '18px' : '24px', 
+                                <img
+                                    src={isDarkMode ? '/favicon_darkmode.png' : '/favicon_lightmode (2).png'}
+                                    alt="Toggle theme"
+                                    style={{
+                                        width: isScrolled ? '18px' : '24px',
+                                        height: isScrolled ? '18px' : '24px',
                                         display: 'block',
                                         transition: 'all 0.3s ease'
                                     }}
