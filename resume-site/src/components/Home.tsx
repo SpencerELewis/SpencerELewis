@@ -5,24 +5,24 @@ import '../styles/home.css';
 function Home() {
   // Technology icons with their labels
   const technologies = [
-    { name: 'C#', icon: '🔷', color: '#239120' },
-    { name: 'TypeScript', icon: '📘', color: '#3178C6' },
-    { name: 'JavaScript', icon: '📜', color: '#F7DF1E' },
-    { name: 'Java', icon: '☕', color: '#007396' },
-    { name: 'React', icon: '⚛️', color: '#61DAFB' },
-    { name: '.NET', icon: '🔵', color: '#512BD4' },
-    { name: 'SQL Server', icon: '🗄️', color: '#CC2927' },
-    { name: 'ElasticSearch', icon: '🔍', color: '#005571' },
-    { name: 'Python', icon: '🐍', color: '#3776AB' },
-    { name: 'Unity', icon: '🎮', color: '#000000' },
-    { name: 'C', icon: '©️', color: '#A8B9CC' },
-    { name: 'Postman', icon: '📮', color: '#FF6C37' },
-    { name: 'Visual Basic', icon: '🅱️', color: '#945DB7' },
-    { name: 'HTML', icon: '🌐', color: '#E34F26' },
-    { name: 'CSS', icon: '🎨', color: '#1572B6' },
-    { name: 'Scikit Learn', icon: '🤖', color: '#F7931E' },
-    { name: 'Git', icon: '📦', color: '#F05032' },
-    { name: 'Plastic SCM', icon: '🔀', color: '#4CAF50' },
+    { name: 'C#', icon: 'csharp.png', color: '#239120' },
+    { name: 'TypeScript', icon: 'typescript.png', color: '#3178C6' },
+    { name: 'JavaScript', icon: 'javascript_im.png', color: '#F7DF1E' },
+    { name: 'Java', icon: 'java_im.png', color: '#007396' },
+    { name: 'React', icon: 'react.png', color: '#61DAFB' },
+    { name: '.NET', icon: '.net.png', color: '#512BD4' },
+    { name: 'SQL Server', icon: 'sqlserver.png', color: '#CC2927' },
+    { name: 'ElasticSearch', icon: 'elasticsearch.png', color: '#005571' },
+    { name: 'Python', icon: 'python_im.png', color: '#3776AB' },
+    { name: 'Unity', icon: 'unity.png', color: '#000000' },
+    { name: 'C', icon: 'c_im.png', color: '#A8B9CC' },
+    { name: 'Postman', icon: 'postman-logo.png', color: '#FF6C37' },
+    { name: 'Visual Basic', icon: 'vb.png', color: '#945DB7' },
+    { name: 'HTML', icon: 'html_im.png', color: '#E34F26' },
+    { name: 'CSS', icon: 'css.png', color: '#1572B6' },
+    { name: 'Scikit Learn', icon: 'scitkit.png', color: '#F7931E' },
+    { name: 'Git', icon: 'git.png', color: '#F05032' },
+    { name: 'Plastic SCM', icon: 'plasticscm.png', color: '#4CAF50' },
   ];
 
   return (
@@ -45,7 +45,11 @@ function Home() {
                 title={tech.name}
               >
                 <span className="tech-icon" style={{ filter: `drop-shadow(0 0 3px ${tech.color})` }}>
-                  {tech.icon}
+                  <img
+                    src={`/coding icons/${tech.icon}`}
+                    alt={tech.name}
+                    style={{ width: '32px', height: '32px', objectFit: 'contain' }}
+                  />
                 </span>
                 <span className="tech-label">{tech.name}</span>
               </div>
