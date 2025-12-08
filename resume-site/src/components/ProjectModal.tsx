@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface ProjectModalProps {
   show: boolean;
@@ -22,8 +22,8 @@ const overlayStyle: React.CSSProperties = {
 };
 
 const modalStyle: React.CSSProperties = {
-  background: 'var(--bs-navbar-bg, #1a1a1a)',
-  color: 'var(--bs-navbar-color, #e0e0e0)',
+  background: 'var(--bs-body-bg, #fff)',
+  color: 'var(--bs-body-color, #222)',
   borderRadius: 18,
   boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
   padding: '2rem',
@@ -39,7 +39,7 @@ const closeStyle: React.CSSProperties = {
   top: 16,
   right: 18,
   fontSize: 28,
-  color: 'var(--bs-navbar-color, #e0e0e0)',
+  color: 'var(--bs-body-color, #222)',
   cursor: 'pointer',
   background: 'none',
   border: 'none',
@@ -62,11 +62,24 @@ const imgStyle: React.CSSProperties = {
 };
 
 const ProjectModal: React.FC<ProjectModalProps> = ({ show, onClose, title, description, images }) => {
+  const [theme, setTheme] = useState('light');
+  useEffect(() => {
+    const html = document.documentElement;
+    const attr = html.getAttribute('data-bs-theme');
+    setTheme(attr === 'dark' ? 'dark' : 'light');
+    const observer = new MutationObserver(() => {
+      const newAttr = html.getAttribute('data-bs-theme');
+      setTheme(newAttr === 'dark' ? 'dark' : 'light');
+    });
+    observer.observe(html, { attributes: true, attributeFilter: ['data-bs-theme'] });
+    return () => observer.disconnect();
+  }, []);
   if (!show) return null;
   return (
     <div style={overlayStyle} onClick={onClose}>
       <div
         style={modalStyle}
+        className={theme === 'dark' ? 'modal-dark' : 'modal-light'}
         onClick={e => e.stopPropagation()}
       >
         <button style={closeStyle} onClick={onClose} aria-label="Close">×</button>

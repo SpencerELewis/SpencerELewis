@@ -3,6 +3,7 @@ import { Navbar, Container, Button, Nav } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 function Header() {
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const saved = localStorage.getItem('theme');
         if (saved) {
@@ -32,20 +33,33 @@ function Header() {
         const handleScroll = () => {
             const scrollThreshold = 50;
             const shouldBeScrolled = window.scrollY > scrollThreshold;
-            
-            // Only update if the state actually needs to change
             if (shouldBeScrolled !== isScrolled) {
                 setIsScrolled(shouldBeScrolled);
             }
         };
-
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
         window.addEventListener('scroll', handleScroll, { passive: true });
-        return () => window.removeEventListener('scroll', handleScroll);
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('resize', handleResize);
+        };
     }, [isScrolled]);
 
     const toggleTheme = () => {
         setIsDarkMode(!isDarkMode);
     };
+
+    // Responsive breakpoints
+    // Adjusted breakpoints for later hiding
+    const hideNavText = windowWidth < 750;
+    const hideDarkMode = windowWidth < 600;
+    const hideSocial = windowWidth < 480;
+
+    // Center icons only when both dark mode and social icons are hidden (only nav icons remain)
+    const onlyIcons = hideNavText && hideDarkMode && hideSocial;
 
     return (
         <div style={{ 
@@ -66,7 +80,7 @@ function Header() {
                 }}
             >
                 <Container fluid className={isScrolled ? 'px-3' : 'px-4'} style={{ transition: 'padding 0.3s ease' }}>
-                    <Nav className="me-auto">
+                    <Nav className={onlyIcons ? 'mx-auto' : 'me-auto'} style={onlyIcons ? { justifyContent: 'center', width: '100%' } : {}}>
                         <Nav.Link 
                             as={Link} 
                             to="/" 
@@ -100,7 +114,7 @@ function Header() {
                                     pointerEvents: 'none'
                                 }}
                             />
-                            Home
+                            {!hideNavText && 'Home'}
                         </Nav.Link>
                         <Nav.Link 
                             as={Link} 
@@ -135,7 +149,7 @@ function Header() {
                                     pointerEvents: 'none'
                                 }}
                             />
-                            Projects
+                            {!hideNavText && 'Projects'}
                         </Nav.Link>
                         <Nav.Link 
                             as={Link} 
@@ -170,91 +184,97 @@ function Header() {
                                     pointerEvents: 'none'
                                 }}
                             />
-                            Resume
+                            {!hideNavText && 'Resume'}
                         </Nav.Link>
                     </Nav>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <a 
-                            href="https://www.linkedin.com/in/spencer-e-lewis/" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                transition: 'all 0.3s ease'
-                            }}
-                            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-                            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                            onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
-                            onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-                        >
-                            <img 
-                                src='/favicon_linkedin.png' 
-                                alt="LinkedIn" 
-                                style={{ 
-                                    width: isScrolled ? '20px' : '24px', 
-                                    height: isScrolled ? '20px' : '24px', 
-                                    display: 'block',
-                                    transition: 'all 0.3s ease',
-                                    filter: isDarkMode ? 'invert(1) brightness(0.75)' : 'invert(0) brightness(0) saturate(100%) opacity(0.55)'
-                                }}
-                            />
-                        </a>
-                        <a 
-                            href="https://github.com/SpencerELewis" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                transition: 'all 0.3s ease'
-                            }}
-                            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-                            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                            onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
-                            onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-                        >
-                            <img 
-                                src='/favicon_github.png' 
-                                alt="GitHub" 
-                                style={{ 
-                                    width: isScrolled ? '20px' : '24px', 
-                                    height: isScrolled ? '20px' : '24px', 
-                                    display: 'block',
-                                    transition: 'all 0.3s ease',
-                                    filter: isDarkMode ? 'invert(1) brightness(0.75)' : 'invert(0) brightness(0) saturate(100%) opacity(0.55)'
-                                }}
-                            />
-                        </a>
-                        <Button 
-                            variant={isDarkMode ? 'light' : 'dark'}
-                            onClick={toggleTheme} 
-                            className="p-2"
-                            style={{ 
-                                width: isScrolled ? '32px' : '40px', 
-                                height: isScrolled ? '32px' : '40px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                transition: 'all 0.3s ease',
-                                borderRadius: '8px'
-                            }}
-                            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
-                            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                        >
-                            <img 
-                                src={isDarkMode ? '/favicon_darkmode.png' : '/favicon_lightmode (2).png'} 
-                                alt="Toggle theme" 
-                                style={{ 
-                                    width: isScrolled ? '18px' : '24px', 
-                                    height: isScrolled ? '18px' : '24px', 
-                                    display: 'block',
+                        {!hideSocial && (
+                            <a 
+                                href="https://www.linkedin.com/in/spencer-e-lewis/" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
                                     transition: 'all 0.3s ease'
                                 }}
-                            />
-                        </Button>
+                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
+                                onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                            >
+                                <img 
+                                    src='/favicon_linkedin.png' 
+                                    alt="LinkedIn" 
+                                    style={{ 
+                                        width: isScrolled ? '20px' : '24px', 
+                                        height: isScrolled ? '20px' : '24px', 
+                                        display: 'block',
+                                        transition: 'all 0.3s ease',
+                                        filter: isDarkMode ? 'invert(1) brightness(0.75)' : 'invert(0) brightness(0) saturate(100%) opacity(0.55)'
+                                    }}
+                                />
+                            </a>
+                        )}
+                        {!hideSocial && (
+                            <a 
+                                href="https://github.com/SpencerELewis" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    transition: 'all 0.3s ease'
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
+                                onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                            >
+                                <img 
+                                    src='/favicon_github.png' 
+                                    alt="GitHub" 
+                                    style={{ 
+                                        width: isScrolled ? '20px' : '24px', 
+                                        height: isScrolled ? '20px' : '24px', 
+                                        display: 'block',
+                                        transition: 'all 0.3s ease',
+                                        filter: isDarkMode ? 'invert(1) brightness(0.75)' : 'invert(0) brightness(0) saturate(100%) opacity(0.55)'
+                                    }}
+                                />
+                            </a>
+                        )}
+                        {!hideDarkMode && (
+                            <Button 
+                                variant={isDarkMode ? 'light' : 'dark'}
+                                onClick={toggleTheme} 
+                                className="p-2"
+                                style={{ 
+                                    width: isScrolled ? '32px' : '40px', 
+                                    height: isScrolled ? '32px' : '40px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    transition: 'all 0.3s ease',
+                                    borderRadius: '8px'
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                            >
+                                <img 
+                                    src={isDarkMode ? '/favicon_darkmode.png' : '/favicon_lightmode (2).png'} 
+                                    alt="Toggle theme" 
+                                    style={{ 
+                                        width: isScrolled ? '18px' : '24px', 
+                                        height: isScrolled ? '18px' : '24px', 
+                                        display: 'block',
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                />
+                            </Button>
+                        )}
                     </div>
                 </Container>
             </Navbar>

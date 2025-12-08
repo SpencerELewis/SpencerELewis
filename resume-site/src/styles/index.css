@@ -1,3 +1,12 @@
+/* Modal theme classes to match app theme */
+.modal-dark {
+  background: var(--bs-navbar-bg, #1a1a1a) !important;
+  color: var(--bs-body-color, #e0e0e0) !important;
+}
+.modal-light {
+  background: var(--bs-body-bg, #fff) !important;
+  color: var(--bs-body-color, #222) !important;
+}
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
