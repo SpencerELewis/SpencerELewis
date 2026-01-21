@@ -13,8 +13,6 @@ function Header() {
         return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     });
 
-    const [isScrolled, setIsScrolled] = useState(false);
-
     useEffect(() => {
         const htmlElement = document.documentElement;
 
@@ -30,23 +28,14 @@ function Header() {
     }, [isDarkMode]);
 
     useEffect(() => {
-        const handleScroll = () => {
-            const scrollThreshold = 50;
-            const shouldBeScrolled = window.scrollY > scrollThreshold;
-            if (shouldBeScrolled !== isScrolled) {
-                setIsScrolled(shouldBeScrolled);
-            }
-        };
         const handleResize = () => {
             setWindowWidth(window.innerWidth);
         };
-        window.addEventListener('scroll', handleScroll, { passive: true });
         window.addEventListener('resize', handleResize);
         return () => {
-            window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('resize', handleResize);
         };
-    }, [isScrolled]);
+    }, []);
 
     const toggleTheme = () => {
         setIsDarkMode(!isDarkMode);
@@ -62,8 +51,7 @@ function Header() {
 
     return (
         <div style={{
-            padding: isScrolled ? '0.5rem 1rem' : '1rem 1rem 0 1rem',
-            transition: 'padding 0.3s ease',
+            padding: '1rem 1rem 0 1rem',
             position: 'sticky',
             top: 0,
             zIndex: 1000
@@ -73,12 +61,11 @@ function Header() {
                 variant={isDarkMode ? 'dark' : 'light'}
                 className="shadow"
                 style={{
-                    borderRadius: isScrolled ? '15px' : '20px',
-                    transition: 'all 0.3s ease',
-                    padding: isScrolled ? '0.25rem 0' : '0.5rem 0'
+                    borderRadius: '20px',
+                    padding: '0.5rem 0'
                 }}
             >
-                <Container fluid className={isScrolled ? 'px-3' : 'px-4'} style={{ transition: 'padding 0.3s ease' }}>
+                <Container fluid className="px-4">
                     <Nav className={onlyIcons ? 'mx-auto' : 'me-auto'} style={onlyIcons ? { justifyContent: 'center', width: '100%' } : {}}>
                         <Nav.Link
                             as={Link}
@@ -89,8 +76,7 @@ function Header() {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 gap: '0.5rem',
-                                fontSize: isScrolled ? '0.9rem' : '1rem',
-                                transition: 'all 0.3s ease'
+                                fontSize: '1rem'
                             }}
                             onMouseEnter={(e) => {
                                 e.currentTarget.style.transform = 'scale(1.1)';
@@ -105,10 +91,9 @@ function Header() {
                                 src='/Favicon_Home_Black.svg'
                                 alt="Home"
                                 style={{
-                                    width: isScrolled ? '20px' : '24px',
-                                    height: isScrolled ? '20px' : '24px',
+                                    width: '24px',
+                                    height: '24px',
                                     display: 'block',
-                                    transition: 'all 0.3s ease',
                                     filter: isDarkMode ? 'invert(1) brightness(0.75)' : 'invert(0) brightness(0) saturate(100%) opacity(0.55)',
                                     pointerEvents: 'none'
                                 }}
@@ -124,8 +109,7 @@ function Header() {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 gap: '0.5rem',
-                                fontSize: isScrolled ? '0.9rem' : '1rem',
-                                transition: 'all 0.3s ease'
+                                fontSize: '1rem'
                             }}
                             onMouseEnter={(e) => {
                                 e.currentTarget.style.transform = 'scale(1.1)';
@@ -140,10 +124,9 @@ function Header() {
                                 src='/favicon_project.png'
                                 alt="Projects"
                                 style={{
-                                    width: isScrolled ? '20px' : '24px',
-                                    height: isScrolled ? '20px' : '24px',
+                                    width: '24px',
+                                    height: '24px',
                                     display: 'block',
-                                    transition: 'all 0.3s ease',
                                     filter: isDarkMode ? 'invert(1) brightness(0.75)' : 'invert(0) brightness(0) saturate(100%) opacity(0.55)',
                                     pointerEvents: 'none'
                                 }}
@@ -159,8 +142,7 @@ function Header() {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 gap: '0.5rem',
-                                fontSize: isScrolled ? '0.9rem' : '1rem',
-                                transition: 'all 0.3s ease'
+                                fontSize: '1rem'
                             }}
                             onMouseEnter={(e) => {
                                 e.currentTarget.style.transform = 'scale(1.1)';
@@ -175,10 +157,9 @@ function Header() {
                                 src='/favicon_resume.png'
                                 alt="Resume"
                                 style={{
-                                    width: isScrolled ? '20px' : '24px',
-                                    height: isScrolled ? '20px' : '24px',
+                                    width: '24px',
+                                    height: '24px',
                                     display: 'block',
-                                    transition: 'all 0.3s ease',
                                     filter: isDarkMode ? 'invert(1) brightness(0.75)' : 'invert(0) brightness(0) saturate(100%) opacity(0.55)',
                                     pointerEvents: 'none'
                                 }}
@@ -207,10 +188,9 @@ function Header() {
                                     src='/favicon_linkedin.png'
                                     alt="LinkedIn"
                                     style={{
-                                        width: isScrolled ? '20px' : '24px',
-                                        height: isScrolled ? '20px' : '24px',
+                                        width: '24px',
+                                        height: '24px',
                                         display: 'block',
-                                        transition: 'all 0.3s ease',
                                         filter: isDarkMode ? 'invert(1) brightness(0.75)' : 'invert(0) brightness(0) saturate(100%) opacity(0.55)'
                                     }}
                                 />
@@ -234,10 +214,9 @@ function Header() {
                                     src='/favicon_github.png'
                                     alt="GitHub"
                                     style={{
-                                        width: isScrolled ? '20px' : '24px',
-                                        height: isScrolled ? '20px' : '24px',
+                                        width: '24px',
+                                        height: '24px',
                                         display: 'block',
-                                        transition: 'all 0.3s ease',
                                         filter: isDarkMode ? 'invert(1) brightness(0.75)' : 'invert(0) brightness(0) saturate(100%) opacity(0.55)'
                                     }}
                                 />
@@ -247,12 +226,11 @@ function Header() {
                                 onClick={toggleTheme}
                                 className="p-2"
                                 style={{
-                                    width: isScrolled ? '32px' : '40px',
-                                    height: isScrolled ? '32px' : '40px',
+                                    width: '40px',
+                                    height: '40px',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    transition: 'all 0.3s ease',
                                     borderRadius: '8px'
                                 }}
                                 onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
@@ -262,10 +240,9 @@ function Header() {
                                     src={isDarkMode ? '/favicon_darkmode.png' : '/favicon_lightmode (2).png'}
                                     alt="Toggle theme"
                                     style={{
-                                        width: isScrolled ? '18px' : '24px',
-                                        height: isScrolled ? '18px' : '24px',
-                                        display: 'block',
-                                        transition: 'all 0.3s ease'
+                                        width: '24px',
+                                        height: '24px',
+                                        display: 'block'
                                     }}
                                 />
                             </Button>
