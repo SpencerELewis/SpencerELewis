@@ -27,6 +27,15 @@ function Home() {
 
   return (
     <Container className="home-container">
+        {/* Welcome text on the left */}
+        <div className="welcome-text welcome-left">
+          <h1>Welcome to My Portfolio</h1>
+          <p>
+            Explore my projects and experience across various technologies and frameworks.
+            I'm passionate about building innovative solutions and continuously learning new tools.
+          </p>
+        </div>
+
         <div className="tech-visualization">
           {/* Central circular image */}
           <div className="center-circle">
@@ -57,13 +66,8 @@ function Home() {
           </div>
         </div>
 
-        {/* Welcome text below */}
-        <div className="welcome-text">
-          <h1>Welcome to My Portfolio</h1>
-          <p>
-            Explore my projects and experience across various technologies and frameworks.
-            I'm passionate about building innovative solutions and continuously learning new tools.
-          </p>
+        {/* About Me text on the right */}
+        <div className="welcome-text welcome-right">
           <h1>About Me</h1>
           <p>
             I am a software developer with a strong background in various technologies and frameworks.
