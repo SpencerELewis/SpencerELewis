@@ -4,18 +4,17 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 80px);
-  padding: 2rem;
-  gap: 3rem;
+  height: calc(100vh - 80px);
+  padding: clamp(1rem, 2vh, 2rem);
+  gap: clamp(1.5rem, 3vw, 3rem);
+  overflow: hidden;
 }
 
 /* Tech visualization container */
 .tech-visualization {
   position: relative;
-  width: min(600px, 40vw);
-  height: min(600px, 40vw);
-  min-width: 400px;
-  min-height: 400px;
+  width: clamp(400px, 50vh, 800px);
+  height: clamp(400px, 50vh, 800px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -26,8 +25,8 @@
 .center-circle {
   position: relative;
   z-index: 10;
-  width: 200px;
-  height: 200px;
+  width: clamp(160px, 25vh, 280px);
+  height: clamp(160px, 25vh, 280px);
   border-radius: 50%;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
@@ -41,8 +40,8 @@
 }
 
 .profile-image {
-  width: 180px;
-  height: 180px;
+  width: clamp(144px, 23vh, 252px);
+  height: clamp(144px, 23vh, 252px);
   border-radius: 50%;
   background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
   display: flex;
@@ -75,38 +74,43 @@
   animation: float 3s ease-in-out infinite;
 }
 
-/* Position bubbles scattered around the center */
-.tech-bubble[data-index="0"] { top: 10%; left: 15%; animation-delay: 0s; }
-.tech-bubble[data-index="1"] { top: 15%; left: 75%; animation-delay: 0.3s; }
-.tech-bubble[data-index="2"] { top: 25%; left: 5%; animation-delay: 0.6s; }
-.tech-bubble[data-index="3"] { top: 30%; right: 8%; animation-delay: 0.9s; }
-.tech-bubble[data-index="4"] { top: 45%; left: 2%; animation-delay: 1.2s; }
-.tech-bubble[data-index="5"] { top: 50%; right: 3%; animation-delay: 1.5s; }
-.tech-bubble[data-index="6"] { top: 60%; left: 8%; animation-delay: 1.8s; }
-.tech-bubble[data-index="7"] { top: 65%; right: 10%; animation-delay: 2.1s; }
-.tech-bubble[data-index="8"] { top: 75%; left: 12%; animation-delay: 2.4s; }
-.tech-bubble[data-index="9"] { top: 80%; right: 15%; animation-delay: 2.7s; }
-.tech-bubble[data-index="10"] { top: 20%; left: 35%; animation-delay: 0.4s; }
-.tech-bubble[data-index="11"] { top: 22%; right: 32%; animation-delay: 0.7s; }
-.tech-bubble[data-index="12"] { top: 72%; left: 40%; animation-delay: 1s; }
-.tech-bubble[data-index="13"] { top: 75%; right: 38%; animation-delay: 1.3s; }
-.tech-bubble[data-index="14"] { top: 5%; left: 45%; animation-delay: 1.6s; }
-.tech-bubble[data-index="15"] { top: 88%; left: 50%; animation-delay: 1.9s; }
-.tech-bubble[data-index="16"] { top: 38%; left: 10%; animation-delay: 2.2s; }
-.tech-bubble[data-index="17"] { top: 42%; right: 12%; animation-delay: 2.5s; }
+/* Position bubbles scattered around the center - spread more to top and bottom */
+.tech-bubble[data-index="0"] { top: -2%; left: 15%; animation-delay: 0s; }
+.tech-bubble[data-index="1"] { top: 2%; left: 75%; animation-delay: 0.3s; }
+.tech-bubble[data-index="2"] { top: 6%; left: 5%; animation-delay: 0.6s; }
+.tech-bubble[data-index="3"] { top: 10%; right: 8%; animation-delay: 0.9s; }
+.tech-bubble[data-index="4"] { top: 14%; left: 2%; animation-delay: 1.2s; }
+.tech-bubble[data-index="5"] { top: 48%; right: 3%; animation-delay: 1.5s; }
+.tech-bubble[data-index="6"] { top: 52%; left: 8%; animation-delay: 1.8s; }
+.tech-bubble[data-index="7"] { top: 70%; right: 10%; animation-delay: 2.1s; }
+.tech-bubble[data-index="8"] { top: 76%; left: 12%; animation-delay: 2.4s; }
+.tech-bubble[data-index="9"] { top: 82%; right: 15%; animation-delay: 2.7s; }
+.tech-bubble[data-index="10"] { top: 0%; left: 35%; animation-delay: 0.4s; }
+.tech-bubble[data-index="11"] { top: 4%; right: 32%; animation-delay: 0.7s; }
+.tech-bubble[data-index="12"] { top: 74%; left: 40%; animation-delay: 1s; }
+.tech-bubble[data-index="13"] { top: 80%; right: 38%; animation-delay: 1.3s; }
+.tech-bubble[data-index="14"] { top: -1%; left: 45%; animation-delay: 1.6s; }
+.tech-bubble[data-index="15"] { top: 92%; left: 50%; animation-delay: 1.9s; }
+.tech-bubble[data-index="16"] { top: 18%; left: 10%; animation-delay: 2.2s; }
+.tech-bubble[data-index="17"] { top: 88%; right: 12%; animation-delay: 2.5s; }
 
 .tech-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
+  width: clamp(45px, 5vh, 80px);
+  height: clamp(45px, 5vh, 80px);
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  font-size: 1.8rem;
+  font-size: clamp(1.2rem, 2vh, 2.2rem);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
+}
+
+.tech-icon img {
+  width: clamp(24px, 3vh, 45px) !important;
+  height: clamp(24px, 3vh, 45px) !important;
 }
 
 [data-bs-theme="dark"] .tech-icon {
@@ -126,15 +130,15 @@
 .tech-label {
   display: none;
   position: absolute;
-  top: 70px;
+  top: clamp(45px, 5vh, 70px);
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
-  font-size: 0.75rem;
+  font-size: clamp(0.6rem, 1vh, 0.75rem);
   font-weight: 500;
   color: var(--bs-body-color);
   background: var(--bs-body-bg);
-  padding: 0.25rem 0.5rem;
+  padding: clamp(0.15rem, 0.3vh, 0.25rem) clamp(0.3rem, 0.6vh, 0.5rem);
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -146,7 +150,7 @@
 /* Welcome text */
 .welcome-text {
   text-align: left;
-  max-width: 350px;
+  max-width: clamp(300px, 30vw, 450px);
   animation: fadeInUp 1s ease-out;
   flex: 0 1 auto;
 }
@@ -160,9 +164,9 @@
 }
 
 .welcome-text h1 {
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 4vh, 3.5rem);
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: clamp(0.75rem, 1.5vh, 1.5rem);
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -170,10 +174,43 @@
 }
 
 .welcome-text p {
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 2vh, 1.4rem);
   line-height: 1.6;
   color: var(--bs-body-color);
   opacity: 0.8;
+}
+
+/* About Me buttons */
+.about-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.75rem, 1.5vh, 1rem);
+  margin-top: clamp(1rem, 2vh, 1.5rem);
+}
+
+.about-button {
+  display: inline-block;
+  padding: clamp(0.6rem, 1.2vh, 0.9rem) clamp(1.2rem, 2.5vw, 1.8rem);
+  font-size: clamp(0.9rem, 1.8vh, 1.2rem);
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.about-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+  color: white;
+  text-decoration: none;
+}
+
+.about-button:active {
+  transform: translateY(0);
 }
 
 /* Animations */
@@ -201,11 +238,11 @@
 @media (max-width: 1200px) {
   .home-container {
     flex-direction: column;
-    gap: 2rem;
+    gap: clamp(1rem, 2vh, 2rem);
   }
 
   .welcome-text {
-    max-width: 700px;
+    max-width: clamp(300px, 80vw, 700px);
     text-align: center;
   }
 
@@ -215,67 +252,7 @@
   }
 
   .tech-visualization {
-    width: min(600px, 90vw);
-    height: min(600px, 90vw);
-    min-width: unset;
-    min-height: unset;
-  }
-}
-
-@media (max-width: 768px) {
-  .tech-visualization {
-    width: min(400px, 90vw);
-    height: min(400px, 90vw);
-  }
-
-  .center-circle {
-    width: 150px;
-    height: 150px;
-  }
-
-  .profile-image {
-    width: 130px;
-    height: 130px;
-  }
-
-  .tech-icon {
-    width: 50px;
-    height: 50px;
-    font-size: 1.5rem;
-  }
-
-  .welcome-text h1 {
-    font-size: 2rem;
-  }
-
-  .welcome-text p {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .tech-visualization {
-    width: min(300px, 90vw);
-    height: min(300px, 90vw);
-  }
-
-  .center-circle {
-    width: 120px;
-    height: 120px;
-  }
-
-  .profile-image {
-    width: 100px;
-    height: 100px;
-  }
-
-  .tech-icon {
-    width: 40px;
-    height: 40px;
-    font-size: 1.2rem;
-  }
-
-  .welcome-text h1 {
-    font-size: 1.75rem;
+    width: clamp(350px, 60vh, 800px);
+    height: clamp(350px, 60vh, 800px);
   }
 }

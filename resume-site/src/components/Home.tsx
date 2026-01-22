@@ -1,4 +1,5 @@
 import { Container } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/home.css';
 
@@ -57,7 +58,7 @@ function Home() {
                   <img
                     src={`/coding icons/${tech.icon}`}
                     alt={tech.name}
-                    style={{ width: '32px', height: '32px', objectFit: 'contain' }}
+                    style={{ objectFit: 'contain' }}
                   />
                 </span>
                 <span className="tech-label">{tech.name}</span>
@@ -73,6 +74,14 @@ function Home() {
             I am a software developer with a strong background in various technologies and frameworks.
             I enjoy tackling challenging problems and creating efficient, scalable solutions.
           </p>
+          <div className="about-buttons">
+            <Link to="/projects" className="about-button">
+              Projects
+            </Link>
+            <Link to="/resume" className="about-button">
+              Resume
+            </Link>
+          </div>
         </div>
       </Container>
   )
