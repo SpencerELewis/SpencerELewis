@@ -60,6 +60,7 @@ function Projects() {
         }
     ];
 
+
     return (
         <div style={{ 
             width: '100%', 
@@ -69,53 +70,35 @@ function Projects() {
             flexDirection: 'column',
             position: 'relative'
         }}>
-            <h1 style={{ 
-                textAlign: 'center', 
-                marginBottom: '2rem',
-                paddingTop: '2rem',
-                position: 'sticky',
-                top: 0,
-                zIndex: 10,
-                background: 'transparent',
-                paddingBottom: '1rem'
-            }}>Projects</h1>
             <div 
                 className="projects-scroll-container"
                 style={{
                     flex: 1,
-                    overflowX: 'auto',
-                    overflowY: 'hidden',
+                    overflowX: 'hidden',
+                    overflowY: 'auto',
                     padding: '0 2rem 2rem 2rem',
                     scrollBehavior: 'smooth',
                     WebkitOverflowScrolling: 'touch',
                     scrollbarWidth: 'thin',
-                    scrollbarColor: 'rgba(0,0,0,0.3) transparent'
+                    scrollbarColor: 'rgba(0,0,0,0.3) transparent',
+                    position: 'relative'
                 }}
             >
                 <div style={{
-                    display: 'flex',
-                    gap: '2rem',
-                    minWidth: 'max-content',
-                    paddingRight: '2rem',
-                    height: '100%',
-                    alignItems: 'center'
+                    maxWidth: '1300px',
+                    margin: '0 auto',
+                    width: '90%',
+                    paddingTop: '1rem'
                 }}>
                     {projects.map((project, index) => (
-                        <div key={index} style={{
-                            flexShrink: 0,
-                            width: '400px',
-                            height: 'calc(100% - 2rem)',
-                            display: 'flex',
-                            alignItems: 'center'
-                        }}>
-                            <ProjectBox
-                                title={project.title}
-                                description={project.description}
-                                modalDescription={project.modalDescription}
-                                image={project.image}
-                                images={project.images}
-                            />
-                        </div>
+                        <ProjectBox
+                            key={index}
+                            title={project.title}
+                            description={project.description}
+                            modalDescription={project.modalDescription}
+                            image={project.image}
+                            images={project.images}
+                        />
                     ))}
                 </div>
             </div>
