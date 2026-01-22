@@ -73,3 +73,30 @@ body {
 [data-bs-theme="dark"] .navbar .nav-link:active {
   color: #e0e0e0 !important;
 }
+
+/* Projects page horizontal scrollbar styling */
+.projects-scroll-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.projects-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+
+.projects-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.projects-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+[data-bs-theme="dark"] .projects-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+[data-bs-theme="dark"] .projects-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
