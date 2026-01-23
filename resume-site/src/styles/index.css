@@ -1,3 +1,18 @@
+/* Project page modal and button shadow pop */
+
+.project-modal, .project-modal .modal-content {
+  box-shadow: 0 8px 32px 0 rgba(40,40,60,0.32), 0 1.5px 6px 0 rgba(40,40,60,0.18);
+  border-radius: 18px;
+}
+
+.project-button, .about-button {
+  box-shadow: 0 4px 16px 0 rgba(40,40,60,0.22), 0 1.5px 6px 0 rgba(40,40,60,0.13);
+  transition: box-shadow 0.25s cubic-bezier(0.4,0,0.2,1), transform 0.18s cubic-bezier(0.4,0,0.2,1);
+}
+.project-button:hover, .about-button:hover {
+  box-shadow: 0 8px 32px 0 rgba(40,40,60,0.36), 0 2px 8px 0 rgba(40,40,60,0.18);
+  transform: translateY(-2px) scale(1.03);
+}
 /* Light outline for active navlink */
 .navlink-active {
   outline: 1px solid var(--bs-navbar-color) !important;

@@ -189,7 +189,7 @@
   font-size: clamp(2rem, 4vh, 3.5rem);
   font-weight: 700;
   margin-bottom: clamp(0.75rem, 1.5vh, 1.5rem);
-  color: white;
+  color: var(--bs-body-color);
 }
 
 .welcome-text p {
@@ -214,17 +214,18 @@
   font-weight: 600;
   text-align: center;
   text-decoration: none;
-  color: black;
-  background: white;
+  color: var(--bs-body-color);
+  background: var(--bs-navbar-bg, #fff);
   border-radius: 8px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s, color 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .about-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.5);
-  color: black;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  color: var(--bs-body-color);
+  background: var(--bs-border-color, #f0f0f0);
   text-decoration: none;
 }
 
