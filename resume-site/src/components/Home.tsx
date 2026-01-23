@@ -21,7 +21,7 @@ function Home() {
     { name: 'Visual Basic', icon: 'vb.png', color: '#945DB7' },
     { name: 'HTML', icon: 'html_im.png', color: '#E34F26' },
     { name: 'CSS', icon: 'css.png', color: '#1572B6' },
-    { name: 'Scikit Learn', icon: 'scitkit.png', color: '#F7931E' },
+    { name: 'Scikit Learn', icon: 'scikit.png', color: '#F7931E' },
     { name: 'Git', icon: 'git.png', color: '#F05032' },
     { name: 'Plastic SCM', icon: 'plasticscm.png', color: '#4CAF50' },
   ];
@@ -41,7 +41,7 @@ function Home() {
           {/* Central circular image */}
           <div className="center-circle">
             <div className="profile-image">
-              <img src="/SL-Professional-2.jpeg" alt="Spencer Lewis" />
+              <img src="/SL-Prof-4.png" alt="Spencer Lewis" />
             </div>
           </div>
 
