@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom';
 import { Navbar, Container, Button, Nav } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 function Header() {
+    const location = useLocation();
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const saved = localStorage.getItem('theme');
@@ -70,7 +72,7 @@ function Header() {
                         <Nav.Link
                             as={Link}
                             to="/"
-                            className="px-3"
+                            className={`px-3${location.pathname === '/' ? ' navlink-active' : ''}`}
                             style={{
                                 display: 'flex',
                                 alignItems: 'center',
@@ -78,14 +80,13 @@ function Header() {
                                 gap: '0.5rem',
                                 fontSize: '1rem'
                             }}
-                            onMouseEnter={(e) => {
+                            onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; }}
+                            onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                            onMouseDown={e => e.currentTarget.style.transform = 'scale(0.95)'}
+                            onMouseUp={e => {
                                 e.currentTarget.style.transform = 'scale(1.1)';
+                                e.currentTarget.blur();
                             }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.transform = 'scale(1)';
-                            }}
-                            onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
-                            onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
                         >
                             <img
                                 src='/Favicon_Home_Black.svg'
@@ -103,7 +104,7 @@ function Header() {
                         <Nav.Link
                             as={Link}
                             to="/projects"
-                            className="px-3"
+                            className={`px-3${location.pathname.startsWith('/projects') ? ' navlink-active' : ''}`}
                             style={{
                                 display: 'flex',
                                 alignItems: 'center',
@@ -111,14 +112,13 @@ function Header() {
                                 gap: '0.5rem',
                                 fontSize: '1rem'
                             }}
-                            onMouseEnter={(e) => {
+                            onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; }}
+                            onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                            onMouseDown={e => e.currentTarget.style.transform = 'scale(0.95)'}
+                            onMouseUp={e => {
                                 e.currentTarget.style.transform = 'scale(1.1)';
+                                e.currentTarget.blur();
                             }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.transform = 'scale(1)';
-                            }}
-                            onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
-                            onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
                         >
                             <img
                                 src='/favicon_project.png'
@@ -136,7 +136,7 @@ function Header() {
                         <Nav.Link
                             as={Link}
                             to="/resume"
-                            className="px-3"
+                            className={`px-3${location.pathname.startsWith('/resume') ? ' navlink-active' : ''}`}
                             style={{
                                 display: 'flex',
                                 alignItems: 'center',
@@ -144,14 +144,13 @@ function Header() {
                                 gap: '0.5rem',
                                 fontSize: '1rem'
                             }}
-                            onMouseEnter={(e) => {
+                            onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; }}
+                            onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                            onMouseDown={e => e.currentTarget.style.transform = 'scale(0.95)'}
+                            onMouseUp={e => {
                                 e.currentTarget.style.transform = 'scale(1.1)';
+                                e.currentTarget.blur();
                             }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.transform = 'scale(1)';
-                            }}
-                            onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
-                            onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
                         >
                             <img
                                 src='/favicon_resume.png'
