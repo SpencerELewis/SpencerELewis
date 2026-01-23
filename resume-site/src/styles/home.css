@@ -77,24 +77,43 @@
 }
 
 /* Position bubbles scattered around the center - spread more to top and bottom */
-.tech-bubble[data-index="0"] { top: -2%; left: 15%; animation-delay: 0s; }
-.tech-bubble[data-index="1"] { top: 2%; left: 75%; animation-delay: 0.3s; }
-.tech-bubble[data-index="2"] { top: 6%; left: 5%; animation-delay: 0.6s; }
-.tech-bubble[data-index="3"] { top: 10%; right: 8%; animation-delay: 0.9s; }
-.tech-bubble[data-index="4"] { top: 14%; left: 2%; animation-delay: 1.2s; }
-.tech-bubble[data-index="5"] { top: 48%; right: 3%; animation-delay: 1.5s; }
+
+/* C# */
+.tech-bubble[data-index="0"] { top: -10%; left: 15%; animation-delay: 0s; } 
+/* TypeScript */
+.tech-bubble[data-index="1"] { top: 20%; left: 75%; animation-delay: 0.3s; } 
+/* JavaScript */
+.tech-bubble[data-index="2"] { top: -10%; left: 54%; animation-delay: 0.6s; } 
+/* Java */
+.tech-bubble[data-index="3"] { top: 7%; right: 5%; animation-delay: 0.9s; } 
+/* React */
+.tech-bubble[data-index="4"] { top: 14%; left: 0%; animation-delay: 1.2s; }
+/* .NET */
+.tech-bubble[data-index="5"] { top: 43%; right: 0%; animation-delay: 1.5s; }
+/* SQL Server */
 .tech-bubble[data-index="6"] { top: 52%; left: 8%; animation-delay: 1.8s; }
-.tech-bubble[data-index="7"] { top: 70%; right: 10%; animation-delay: 2.1s; }
-.tech-bubble[data-index="8"] { top: 76%; left: 12%; animation-delay: 2.4s; }
+/* ElasticSearch */
+.tech-bubble[data-index="7"] { top: 63%; right: 10%; animation-delay: 2.1s; }
+/* Python */
+.tech-bubble[data-index="8"] { top: 76%; left: 5%; animation-delay: 2.4s; }
+/* Unity */
 .tech-bubble[data-index="9"] { top: 82%; right: 15%; animation-delay: 2.7s; }
-.tech-bubble[data-index="10"] { top: 0%; left: 35%; animation-delay: 0.4s; }
-.tech-bubble[data-index="11"] { top: 4%; right: 32%; animation-delay: 0.7s; }
-.tech-bubble[data-index="12"] { top: 74%; left: 40%; animation-delay: 1s; }
+/* C */
+.tech-bubble[data-index="10"] { top: 1%; left: 26%; animation-delay: 0.4s; }
+/* Postman */
+.tech-bubble[data-index="11"] { top: 4%; right: 26%; animation-delay: 0.7s; }
+/* Visual Basic */
+.tech-bubble[data-index="12"] { top: 94%; left:21%; animation-delay: 1s; }
+/* HTML */
 .tech-bubble[data-index="13"] { top: 80%; right: 38%; animation-delay: 1.3s; }
-.tech-bubble[data-index="14"] { top: -1%; left: 45%; animation-delay: 1.6s; }
-.tech-bubble[data-index="15"] { top: 92%; left: 50%; animation-delay: 1.9s; }
-.tech-bubble[data-index="16"] { top: 18%; left: 10%; animation-delay: 2.2s; }
-.tech-bubble[data-index="17"] { top: 88%; right: 12%; animation-delay: 2.5s; }
+/* CSS */
+.tech-bubble[data-index="14"] { top: 10%; left: 45%; animation-delay: 1.6s; }
+/* Scikit Learn */
+.tech-bubble[data-index="15"] { top: 92%; left: 40%; animation-delay: 1.9s; }
+/* Git */
+.tech-bubble[data-index="16"] { top: 30%; left: 10%; animation-delay: 2.2s; }
+/* Plastic SCM */
+.tech-bubble[data-index="17"] { top: 100%; right: 12%; animation-delay: 2.5s; }
 
 .tech-icon {
   display: flex;
