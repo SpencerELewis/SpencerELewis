@@ -9,7 +9,6 @@
   margin: 0 auto;
   padding: clamp(2rem, 4vw, 4rem);
   gap: clamp(2rem, 5vw, 5rem);
-  overflow: hidden;
 }
 
 /* Tech visualization container */
@@ -171,7 +170,6 @@
 /* Welcome text */
 .welcome-text {
   text-align: left;
-  max-width: clamp(400px, 40vw, 700px);
   width: 100%;
   animation: fadeInUp 1s ease-out;
   flex: 1 1 auto;
@@ -255,15 +253,21 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 1200px) {
+@media (max-width: 1300px) {
   .home-container {
     flex-direction: column;
-    gap: clamp(1rem, 2vh, 2rem);
   }
 
   .welcome-text {
     max-width: clamp(300px, 80vw, 700px);
     text-align: center;
+    flex: none;
+    width: auto;
+  }
+
+  .welcome-text h1,
+  .welcome-text p {
+    margin-bottom: 0;
   }
 
   .welcome-left,
@@ -271,8 +275,84 @@
     text-align: center;
   }
 
-  .tech-visualization {
-    width: clamp(350px, 60vh, 800px);
-    height: clamp(350px, 60vh, 800px);
+    .tech-visualization {
+      width: clamp(180px, 30vh, 320px);
+      height: clamp(180px, 30vh, 320px);
+    }
+
+  .tech-bubbles {
+    display: none;
   }
+}
+
+/* Gradually move tech bubbles closer to center as screen shrinks */
+@media (max-width: 900px) {
+  .tech-bubble[data-index="0"] { top: 0%; left: 25%; }
+  .tech-bubble[data-index="1"] { top: 25%; left: 65%; }
+  .tech-bubble[data-index="2"] { top: 0%; left: 54%; }
+  .tech-bubble[data-index="3"] { top: 10%; right: 15%; }
+  .tech-bubble[data-index="4"] { top: 20%; left: 10%; }
+  .tech-bubble[data-index="5"] { top: 45%; right: 10%; }
+  .tech-bubble[data-index="6"] { top: 55%; left: 18%; }
+  .tech-bubble[data-index="7"] { top: 65%; right: 20%; }
+  .tech-bubble[data-index="8"] { top: 80%; left: 15%; }
+  .tech-bubble[data-index="9"] { top: 85%; right: 25%; }
+  .tech-bubble[data-index="10"] { top: 10%; left: 36%; }
+  .tech-bubble[data-index="11"] { top: 14%; right: 36%; }
+  .tech-bubble[data-index="12"] { top: 94%; left:31%; }
+  .tech-bubble[data-index="13"] { top: 85%; right: 38%; }
+  .tech-bubble[data-index="14"] { top: 20%; left: 45%; }
+  .tech-bubble[data-index="15"] { top: 92%; left: 50%; }
+  .tech-bubble[data-index="16"] { top: 35%; left: 20%; }
+  .tech-bubble[data-index="17"] { top: 100%; right: 22%; }
+}
+
+@media (max-width: 700px) {
+  .tech-bubble[data-index] {
+    width: clamp(32px, 4vh, 50px);
+    height: clamp(32px, 4vh, 50px);
+  }
+  .tech-bubble[data-index="0"] { top: 10%; left: 35%; }
+  .tech-bubble[data-index="1"] { top: 30%; left: 55%; }
+  .tech-bubble[data-index="2"] { top: 10%; left: 44%; }
+  .tech-bubble[data-index="3"] { top: 20%; right: 25%; }
+  .tech-bubble[data-index="4"] { top: 30%; left: 20%; }
+  .tech-bubble[data-index="5"] { top: 50%; right: 20%; }
+  .tech-bubble[data-index="6"] { top: 60%; left: 28%; }
+  .tech-bubble[data-index="7"] { top: 70%; right: 30%; }
+  .tech-bubble[data-index="8"] { top: 85%; left: 25%; }
+  .tech-bubble[data-index="9"] { top: 90%; right: 35%; }
+  .tech-bubble[data-index="10"] { top: 20%; left: 46%; }
+  .tech-bubble[data-index="11"] { top: 24%; right: 46%; }
+  .tech-bubble[data-index="12"] { top: 97%; left:41%; }
+  .tech-bubble[data-index="13"] { top: 90%; right: 48%; }
+  .tech-bubble[data-index="14"] { top: 30%; left: 55%; }
+  .tech-bubble[data-index="15"] { top: 97%; left: 60%; }
+  .tech-bubble[data-index="16"] { top: 40%; left: 30%; }
+  .tech-bubble[data-index="17"] { top: 100%; right: 32%; }
+}
+
+@media (max-width: 500px) {
+  .tech-bubble[data-index] {
+    width: clamp(24px, 3vh, 36px);
+    height: clamp(24px, 3vh, 36px);
+  }
+  .tech-bubble[data-index="0"] { top: 20%; left: 45%; }
+  .tech-bubble[data-index="1"] { top: 35%; left: 50%; }
+  .tech-bubble[data-index="2"] { top: 20%; left: 49%; }
+  .tech-bubble[data-index="3"] { top: 30%; right: 35%; }
+  .tech-bubble[data-index="4"] { top: 40%; left: 30%; }
+  .tech-bubble[data-index="5"] { top: 55%; right: 30%; }
+  .tech-bubble[data-index="6"] { top: 65%; left: 38%; }
+  .tech-bubble[data-index="7"] { top: 75%; right: 40%; }
+  .tech-bubble[data-index="8"] { top: 90%; left: 35%; }
+  .tech-bubble[data-index="9"] { top: 95%; right: 45%; }
+  .tech-bubble[data-index="10"] { top: 30%; left: 56%; }
+  .tech-bubble[data-index="11"] { top: 34%; right: 56%; }
+  .tech-bubble[data-index="12"] { top: 99%; left:51%; }
+  .tech-bubble[data-index="13"] { top: 95%; right: 58%; }
+  .tech-bubble[data-index="14"] { top: 40%; left: 65%; }
+  .tech-bubble[data-index="15"] { top: 99%; left: 70%; }
+  .tech-bubble[data-index="16"] { top: 45%; left: 40%; }
+  .tech-bubble[data-index="17"] { top: 100%; right: 42%; }
 }
