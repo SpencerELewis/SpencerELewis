@@ -86,6 +86,13 @@ function Projects() {
     const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
     const ticking = useRef(false);
 
+    // Shared wheel state refs so we can handle wheel gestures from anywhere on the page
+    const wheelAcc = useRef(0);
+    // Enable keyboard navigation after a click anywhere on the page
+    const keyboardEnabled = useRef(false);
+    const selectedIndexRef = useRef(selectedIndex);
+    useEffect(() => { selectedIndexRef.current = selectedIndex; }, [selectedIndex]);
+
     // Right-side preview shows whichever project is centered in the scroll container
     const displayProject = projects[selectedIndex];
     // preview image crossfade state
@@ -218,48 +225,87 @@ function Projects() {
             });
         };
 
-        // Wheel handler: snap one card per wheel gesture
-        const wheelState = {
-            acc: 0
-        } as { acc: number };
-        const wheelLock = { locked: false } as { locked: boolean };
         const WHEEL_THRESHOLD = 40; // px-ish threshold
-        const ANIM_LOCK_MS = 550;
+
+        const handleWheelDelta = (deltaY: number) => {
+            if (Math.abs(deltaY) < 0.5) return;
+            wheelAcc.current += deltaY;
+
+            // trigger when accumulated delta exceeds threshold
+            if (Math.abs(wheelAcc.current) >= WHEEL_THRESHOLD) {
+                const dir = wheelAcc.current > 0 ? 1 : -1;
+                let next = selectedIndex + dir;
+                next = Math.max(0, Math.min(projects.length - 1, next));
+                if (next !== selectedIndex) {
+                    setSelectedIndex(next);
+                    scrollToCenter(next, 'smooth');
+                }
+                wheelAcc.current = 0;
+            }
+        };
 
         const onWheel = (e: WheelEvent) => {
             // only handle vertical scrolling
             if (Math.abs(e.deltaY) < 0.5) return;
             // prevent native scroll for precise snapping behavior
             e.preventDefault();
+            handleWheelDelta(e.deltaY);
+        };
 
-            if (wheelLock.locked) return;
-
-            wheelState.acc += e.deltaY;
-
-            // trigger when accumulated delta exceeds threshold
-            if (Math.abs(wheelState.acc) >= WHEEL_THRESHOLD) {
-                const dir = wheelState.acc > 0 ? 1 : -1;
-                let next = selectedIndex + dir;
-                next = Math.max(0, Math.min(projects.length - 1, next));
-                if (next !== selectedIndex) {
-                    wheelLock.locked = true;
-                    setSelectedIndex(next);
-                    scrollToCenter(next, 'smooth');
-                    setTimeout(() => { wheelLock.locked = false; }, ANIM_LOCK_MS);
-                }
-                wheelState.acc = 0;
-            }
+        // Global handler: allow scrolling the left projects column from anywhere on the page
+        const onWheelGlobal = (e: WheelEvent) => {
+            // if the event originated inside the container, let it handle the event
+            if (container.contains(e.target as Node)) return;
+            if (Math.abs(e.deltaY) < 0.5) return;
+            e.preventDefault();
+            handleWheelDelta(e.deltaY);
         };
 
         container.addEventListener('scroll', onScroll, { passive: true });
         container.addEventListener('wheel', onWheel, { passive: false });
+        window.addEventListener('wheel', onWheelGlobal, { passive: false });
+
         updateCenteredIndex();
 
         return () => {
             container.removeEventListener('scroll', onScroll);
             container.removeEventListener('wheel', onWheel);
+            window.removeEventListener('wheel', onWheelGlobal);
         };
     }, [projects, selectedIndex]);
+
+    // Enable Arrow key navigation after the user clicks anywhere on the page
+    useEffect(() => {
+        const onDocumentClick = () => { keyboardEnabled.current = true; };
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (!keyboardEnabled.current) return;
+
+            const active = document.activeElement as HTMLElement | null;
+            const tag = (active?.tagName || '').toLowerCase();
+            const isInput = tag === 'input' || tag === 'textarea' || tag === 'select' || (active?.isContentEditable);
+            if (isInput) return;
+
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                const next = Math.min(projects.length - 1, selectedIndexRef.current + 1);
+                if (next !== selectedIndexRef.current) { setSelectedIndex(next); scrollToCenter(next, 'smooth'); }
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                const prev = Math.max(0, selectedIndexRef.current - 1);
+                if (prev !== selectedIndexRef.current) { setSelectedIndex(prev); scrollToCenter(prev, 'smooth'); }
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                setSelectedIndex(0); scrollToCenter(0, 'smooth');
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                setSelectedIndex(projects.length - 1); scrollToCenter(projects.length - 1, 'smooth');
+            }
+        };
+
+        document.addEventListener('click', onDocumentClick);
+        window.addEventListener('keydown', onKeyDown);
+        return () => { document.removeEventListener('click', onDocumentClick); window.removeEventListener('keydown', onKeyDown); };
+    }, [projects.length]);
 
     useEffect(() => {
         scrollToCenter(selectedIndex, 'smooth');
