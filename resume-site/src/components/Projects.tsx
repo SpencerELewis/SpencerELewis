@@ -112,7 +112,7 @@ function Projects() {
                 </div>
 
                 {/* Right: Image / preview panel */}
-                <div style={{
+                <div className="projects-preview-column" style={{
                     width: '50%',
                     minWidth: 320,
                     display: 'flex',

@@ -17,7 +17,7 @@ const ProjectBox: React.FC<ProjectBoxProps> = ({ title, description, modalDescri
     const [hovered, setHovered] = useState(false);
     return (
         <>
-            <div
+            <div className="project-card"
                 style={{
                     borderRadius: '16px',
                     boxShadow: hovered ? '0 4px 32px rgba(0,0,0,0.16)' : '0 2px 16px rgba(0,0,0,0.08)',

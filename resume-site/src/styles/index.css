@@ -145,3 +145,59 @@ body {
     height: auto;
   }
 }
+
+/* Mobile: hide preview and expand list to full width */
+@media (max-width: 768px) {
+  .projects-preview {
+    display: none !important;
+  }
+
+  .projects-scroll-container {
+    width: 100% !important;
+    padding: 1rem !important;
+    box-sizing: border-box !important;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .projects-container {
+    height: calc(100vh - 80px) !important;
+  }
+
+  /* Hide the entire preview column so left column can expand to full width */
+  .projects-preview-column {
+    display: none !important;
+  }
+
+  /* Center cards and constrain width when preview is hidden on mobile */
+  .projects-scroll-container {
+    width: 100% !important;
+    padding: 1rem !important;
+    box-sizing: border-box !important;
+  }
+
+  /* The inner wrapper: center and limit width so cards sit centered */
+  .projects-scroll-container > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .projects-scroll-container .project-card {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* ensure inner content (images/text) doesn't overflow when constrained */
+  .projects-scroll-container .project-card img {
+    min-width: 56px;
+    min-height: 56px;
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+  }
+}
