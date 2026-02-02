@@ -96,8 +96,12 @@ function Projects() {
     const crossTimer = useRef<number | null>(null);
 
     useEffect(() => {
-        if (displayProject.image === previewSrc) return;
-        // fade out
+        // If the preview already matches the requested project, ensure it's visible
+        if (displayProject.image === previewSrc) {
+            if (imgOpacity === 0) setImgOpacity(1);
+            return;
+        }
+        // fade out then swap image and fade in
         setImgOpacity(0);
         if (fadeTimer.current) window.clearTimeout(fadeTimer.current);
         fadeTimer.current = window.setTimeout(() => {
@@ -111,7 +115,7 @@ function Projects() {
             if (fadeTimer.current) { window.clearTimeout(fadeTimer.current); fadeTimer.current = null; }
             if (crossTimer.current) { window.clearTimeout(crossTimer.current); crossTimer.current = null; }
         };
-    }, [displayProject.image]);
+    }, [displayProject.image, previewSrc, imgOpacity]);
 
     // preview text crossfade state (prior text fades out, then new fades in)
     const [previewTitle, setPreviewTitle] = useState<string>(displayProject.title);
@@ -121,14 +125,18 @@ function Projects() {
     const textCrossTimer = useRef<number | null>(null);
 
     useEffect(() => {
-        if (displayProject.title === previewTitle && (displayProject.imageDescription || '') === previewDesc) return;
+        const desc = displayProject.imageDescription || '';
+        if (displayProject.title === previewTitle && desc === previewDesc) {
+            if (textOpacity === 0) setTextOpacity(1);
+            return;
+        }
         // fade out current text
         setTextOpacity(0);
         if (textFadeTimer.current) window.clearTimeout(textFadeTimer.current);
         textFadeTimer.current = window.setTimeout(() => {
             // swap to new text
             setPreviewTitle(displayProject.title);
-            setPreviewDesc(displayProject.imageDescription || '');
+            setPreviewDesc(desc);
             // then fade in
             if (textCrossTimer.current) window.clearTimeout(textCrossTimer.current);
             textCrossTimer.current = window.setTimeout(() => setTextOpacity(1), 60);
@@ -138,7 +146,7 @@ function Projects() {
             if (textFadeTimer.current) { window.clearTimeout(textFadeTimer.current); textFadeTimer.current = null; }
             if (textCrossTimer.current) { window.clearTimeout(textCrossTimer.current); textCrossTimer.current = null; }
         };
-    }, [displayProject.title, displayProject.imageDescription]);
+    }, [displayProject.title, displayProject.imageDescription, previewTitle, previewDesc, textOpacity]);
 
     // Calculate padding so the first and last cards can be scrolled to the center
     const recalcPadding = () => {
