@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ProjectBox from './ProjectBox';
 
 
@@ -272,7 +272,7 @@ function Projects() {
                         width: '90%'
                     }}>
                         {projects.map((project, index) => (
-                            <div key={index} ref={el => itemRefs.current[index] = el} style={{
+                            <div key={index} ref={el => { itemRefs.current[index] = el; }} style={{
                                 scrollSnapAlign: 'center',
                                 transition: 'transform 380ms cubic-bezier(0.2,0.8,0.2,1), opacity 300ms',
                                 transform: index === selectedIndex ? 'scale(1.03)' : 'scale(1)',
@@ -281,11 +281,8 @@ function Projects() {
                                 <ProjectBox
                                     title={project.title}
                                     description={project.description}
-                                    modalDescription={project.modalDescription}
                                     image={project.image}
-                                    images={project.images}
                                     isSelected={index === selectedIndex}
-                                    onSelect={() => setSelectedIndex(index)}
                                 />
                             </div>
                         ))}
