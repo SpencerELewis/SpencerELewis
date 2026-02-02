@@ -181,10 +181,11 @@ body {
   .projects-scroll-container > div {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     width: 100%;
-    max-width: 720px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
   }
 
   .projects-scroll-container .project-card {
@@ -246,6 +247,10 @@ body {
 }
 
 @media (max-width: 768px) {
+  .project-tech-list {
+    display: none !important;
+  }
+
   .project-tech-pill {
     font-size: 0.8rem;
     padding: 0.2rem 0.5rem;
