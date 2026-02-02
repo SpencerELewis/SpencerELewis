@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ProjectBox from './ProjectBox';
 
 
@@ -64,7 +64,93 @@ function Projects() {
     const [selectedIndex, setSelectedIndex] = useState<number>(0);
     const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
-    const displayProject = hoverIndex !== null ? projects[hoverIndex] : projects[selectedIndex];
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const wrapperRef = useRef<HTMLDivElement | null>(null);
+    const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
+    const ticking = useRef(false);
+
+    // Right-side preview shows whichever project is centered in the scroll container
+    const displayProject = projects[selectedIndex];
+
+    // Calculate padding so the first and last cards can be scrolled to the center
+    const recalcPadding = () => {
+        const container = containerRef.current;
+        const firstItem = itemRefs.current[0];
+        if (!container || !firstItem || !wrapperRef.current) return;
+        const containerH = container.clientHeight;
+        const itemH = firstItem.clientHeight;
+        const pad = Math.max(0, Math.round(containerH / 2 - itemH / 2));
+        wrapperRef.current.style.paddingTop = pad + 'px';
+        wrapperRef.current.style.paddingBottom = pad + 'px';
+    };
+
+    const scrollToCenter = (index: number, behavior: ScrollBehavior = 'smooth') => {
+        const container = containerRef.current;
+        const el = itemRefs.current[index];
+        if (!container || !el) return;
+        const offsetTop = el.offsetTop - (container.clientHeight / 2 - el.clientHeight / 2);
+        container.scrollTo({ top: offsetTop, behavior });
+    };
+
+    const updateCenteredIndex = () => {
+        const container = containerRef.current;
+        if (!container) return;
+        const containerRect = container.getBoundingClientRect();
+        const containerCenterY = containerRect.top + containerRect.height / 2;
+
+        let closestIdx = 0;
+        let closestDist = Infinity;
+
+        itemRefs.current.forEach((el, idx) => {
+            if (!el) return;
+            const rect = el.getBoundingClientRect();
+            const elCenterY = rect.top + rect.height / 2;
+            const dist = Math.abs(elCenterY - containerCenterY);
+            if (dist < closestDist) {
+                closestDist = dist;
+                closestIdx = idx;
+            }
+        });
+
+        if (closestIdx !== selectedIndex) {
+            setSelectedIndex(closestIdx);
+        }
+    };
+
+    useEffect(() => {
+        recalcPadding();
+        setTimeout(() => scrollToCenter(selectedIndex, 'auto'), 50);
+
+        const onResize = () => {
+            recalcPadding();
+            scrollToCenter(selectedIndex, 'auto');
+        };
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
+
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        const onScroll = () => {
+            if (ticking.current) return;
+            ticking.current = true;
+            window.requestAnimationFrame(() => {
+                updateCenteredIndex();
+                ticking.current = false;
+            });
+        };
+
+        container.addEventListener('scroll', onScroll, { passive: true });
+        updateCenteredIndex();
+
+        return () => container.removeEventListener('scroll', onScroll);
+    }, [projects]);
+
+    useEffect(() => {
+        scrollToCenter(selectedIndex, 'smooth');
+    }, [selectedIndex]);
 
     return (
         <div style={{ 
@@ -77,36 +163,37 @@ function Projects() {
             <div style={{ display: 'flex', width: '100%', height: '100%' }}>
                 {/* Left: Scrollable list of project cards */}
                 <div 
+                    ref={containerRef}
                     className="projects-scroll-container"
                     style={{
                         width: '50%',
                         minWidth: 320,
                         overflowX: 'hidden',
                         overflowY: 'auto',
-                        padding: '0 2rem 2rem 2rem',
+                        padding: '0 2rem',
                         scrollBehavior: 'smooth',
                         WebkitOverflowScrolling: 'touch',
                         position: 'relative'
                     }}
                 >
-                    <div style={{
+                    <div ref={wrapperRef} style={{
                         maxWidth: '900px',
                         margin: '0 auto',
-                        width: '90%',
-                        paddingTop: '1rem'
+                        width: '90%'
                     }}>
                         {projects.map((project, index) => (
-                            <ProjectBox
-                                key={index}
-                                title={project.title}
-                                description={project.description}
-                                modalDescription={project.modalDescription}
-                                image={project.image}
-                                images={project.images}
-                                onHover={() => setHoverIndex(index)}
-                                onLeave={() => setHoverIndex(null)}
-                                onSelect={() => setSelectedIndex(index)}
-                            />
+                            <div key={index} ref={el => itemRefs.current[index] = el}>
+                                <ProjectBox
+                                    title={project.title}
+                                    description={project.description}
+                                    modalDescription={project.modalDescription}
+                                    image={project.image}
+                                    images={project.images}
+                                    onHover={() => setHoverIndex(index)}
+                                    onLeave={() => setHoverIndex(null)}
+                                    onSelect={() => setSelectedIndex(index)}
+                                />
+                            </div>
                         ))}
                     </div>
                 </div>
