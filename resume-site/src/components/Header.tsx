@@ -80,13 +80,15 @@ function Header() {
                                 gap: '0.5rem',
                                 fontSize: '1rem'
                             }}
-                            onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; }}
-                            onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
-                            onMouseDown={e => e.currentTarget.style.transform = 'scale(0.95)'}
-                            onMouseUp={e => {
-                                e.currentTarget.style.transform = 'scale(1.1)';
+                            onPointerEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; }}
+                            onPointerLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                            onPointerDown={e => e.currentTarget.style.transform = 'scale(0.95)'}
+                            onPointerUp={e => {
+                                const hovered = e.currentTarget.matches(':hover');
+                                e.currentTarget.style.transform = hovered ? 'scale(1.1)' : 'scale(1)';
                                 e.currentTarget.blur();
                             }}
+                            onPointerCancel={e => e.currentTarget.style.transform = 'scale(1)'}
                         >
                             <img
                                 src='/Favicon_Home_Black.svg'
@@ -112,13 +114,15 @@ function Header() {
                                 gap: '0.5rem',
                                 fontSize: '1rem'
                             }}
-                            onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; }}
-                            onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
-                            onMouseDown={e => e.currentTarget.style.transform = 'scale(0.95)'}
-                            onMouseUp={e => {
-                                e.currentTarget.style.transform = 'scale(1.1)';
+                            onPointerEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; }}
+                            onPointerLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                            onPointerDown={e => e.currentTarget.style.transform = 'scale(0.95)'}
+                            onPointerUp={e => {
+                                const hovered = e.currentTarget.matches(':hover');
+                                e.currentTarget.style.transform = hovered ? 'scale(1.1)' : 'scale(1)';
                                 e.currentTarget.blur();
                             }}
+                            onPointerCancel={e => e.currentTarget.style.transform = 'scale(1)'}
                         >
                             <img
                                 src='/favicon_project.png'
@@ -144,13 +148,15 @@ function Header() {
                                 gap: '0.5rem',
                                 fontSize: '1rem'
                             }}
-                            onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; }}
-                            onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
-                            onMouseDown={e => e.currentTarget.style.transform = 'scale(0.95)'}
-                            onMouseUp={e => {
-                                e.currentTarget.style.transform = 'scale(1.1)';
+                            onPointerEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; }}
+                            onPointerLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                            onPointerDown={e => e.currentTarget.style.transform = 'scale(0.95)'}
+                            onPointerUp={e => {
+                                const hovered = e.currentTarget.matches(':hover');
+                                e.currentTarget.style.transform = hovered ? 'scale(1.1)' : 'scale(1)';
                                 e.currentTarget.blur();
                             }}
+                            onPointerCancel={e => e.currentTarget.style.transform = 'scale(1)'}
                         >
                             <img
                                 src='/favicon_resume.png'
@@ -178,10 +184,11 @@ function Header() {
                                     justifyContent: 'center',
                                     transition: 'all 0.3s ease'
                                 }}
-                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                                onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
-                                onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                                onPointerEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                                onPointerLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                onPointerDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
+                                onPointerUp={(e) => { const hovered = e.currentTarget.matches(':hover'); e.currentTarget.style.transform = hovered ? 'scale(1.1)' : 'scale(1)'; }}
+                                onPointerCancel={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
                                 <img
                                     src='/favicon_linkedin.png'
@@ -204,10 +211,11 @@ function Header() {
                                     justifyContent: 'center',
                                     transition: 'all 0.3s ease'
                                 }}
-                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                                onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
-                                onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                                onPointerEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                                onPointerLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                onPointerDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
+                                onPointerUp={(e) => { const hovered = e.currentTarget.matches(':hover'); e.currentTarget.style.transform = hovered ? 'scale(1.1)' : 'scale(1)'; }}
+                                onPointerCancel={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
                                 <img
                                     src='/favicon_github.png'
@@ -232,8 +240,9 @@ function Header() {
                                     justifyContent: 'center',
                                     borderRadius: '8px'
                                 }}
-                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
-                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                onPointerEnter={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
+                                onPointerLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                onPointerCancel={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
                                 <img
                                     src={isDarkMode ? '/favicon_darkmode.png' : '/favicon_lightmode (2).png'}
