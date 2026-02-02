@@ -35,16 +35,16 @@ const ProjectBox: React.FC<ProjectBoxProps> = ({ title, description, techs = [],
     return (
         <div className="project-card"
             style={{
-                borderRadius: '16px',
-                boxShadow: isSelected ? '0 8px 48px rgba(0,0,0,0.18)' : '0 2px 16px rgba(0,0,0,0.08)',
+                borderRadius: '20px',
+                boxShadow: isSelected ? '0 14px 88px rgba(0,0,0,0.22)' : '0 6px 36px rgba(0,0,0,0.12)',
                 background: 'var(--bs-navbar-bg, var(--bs-body-bg, #fff))',
-                padding: '1.5rem',
-                margin: '1.5rem 0',
+                padding: '2.5rem',
+                margin: '2rem 0',
                 display: 'flex',
                 alignItems: 'flex-start',
-                gap: '1.5rem',
+                gap: '2.5rem',
                 transition: 'box-shadow 340ms cubic-bezier(0.2,0.8,0.2,1), transform 300ms',
-                minHeight: '140px',
+                minHeight: '260px',
                 width: '100%',
                 cursor: 'default',
                 userSelect: 'none',
@@ -52,8 +52,8 @@ const ProjectBox: React.FC<ProjectBoxProps> = ({ title, description, techs = [],
             }}
         >
             <div style={{ flex: 1 }}>
-                <h3 style={{ margin: 0 }}>{title}</h3>
-                <p style={{ margin: '0.5rem 0 0 0' }}>{description}</p>
+                <h3 style={{ margin: 0, fontSize: '1.5rem', lineHeight: 1.15 }}>{title}</h3>
+                <p style={{ margin: '1rem 0 0 0', fontSize: '1.05rem', color: 'var(--bs-body-color)' }}>{description}</p>
                 <div className="project-tech-list" style={{ marginTop: '0.75rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                     {techs.slice(0,6).map((t, i) => {
                         const meta = TECH_ICONS[t];
@@ -63,7 +63,7 @@ const ProjectBox: React.FC<ProjectBoxProps> = ({ title, description, techs = [],
                                     className="project-tech-img"
                                     alt={t}
                                     src={`/coding icons/${meta.icon}`}
-                                    style={{ filter: `drop-shadow(0 0 3px ${meta.color})`, width: 28, height: 28, objectFit: 'contain' }}
+                                    style={{ filter: `drop-shadow(0 0 4px ${meta.color})`, width: 70, height: 70, objectFit: 'contain' }}
                                 />
                             </span>
                         ) : null;

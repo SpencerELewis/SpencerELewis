@@ -215,20 +215,20 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 6px;
-  border-radius: 8px;
+  padding: 8px 10px;
+  border-radius: 12px;
   background: transparent; /* blends into light mode */
   transition: background 160ms ease, box-shadow 160ms ease;
 }
 
 [data-bs-theme="dark"] .project-tech-bg {
-  background: rgba(255,255,255,0.06);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+  background: rgba(255,255,255,0.05);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.36);
 }
 
 .project-tech-img {
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
   display: inline-block;
   vertical-align: middle;
@@ -237,12 +237,12 @@ body {
 
 @media (max-width: 420px) {
   .project-tech-bg {
-    padding: 3px 5px;
-    border-radius: 6px;
+    padding: 6px 8px;
+    border-radius: 10px;
   }
 
   .project-tech-img {
-    width: 24px;
-    height: 24px;
+    width: 34px;
+    height: 34px;
   }
 }
