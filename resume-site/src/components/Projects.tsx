@@ -7,6 +7,7 @@ function Projects() {
         {
             title: "JerichOS",
             description: "A x86 Operating System currently in development.",
+            imageDescription: "Exploring low-level OS concepts, bootloaders, and memory.",
             techs: ["C", "Assembly", "Operating Systems"],
             image: "/assets/vr-gallery-thumb.jpg",
             images: ["/assets/vr-gallery-1.jpg", "/assets/vr-gallery-2.jpg"]
@@ -15,6 +16,7 @@ function Projects() {
         {
             title: "BananaCam",
             description: "A machine learning powered webcam filter app for identifying bananas in real time.",
+            imageDescription: "Real-time object detection using webcam and ML models.",
             techs: ["Python", "TensorFlow", "OpenCV"],
             image: "/assets/portfolio-thumb.jpg",
             images: ["/assets/portfolio-1.jpg", "/assets/portfolio-2.jpg"]
@@ -22,6 +24,7 @@ function Projects() {
         {
             title: "TokenGuard",
             description: "A middleware service for assessing risk and preventing stolen tokens from accessing APIs based on IPs.",
+            imageDescription: "Risk-based token validation and IP-based controls.",
             techs: ["Node.js", "Express", "Security"],
             image: "/assets/resume-thumb.png",
             images: ["/assets/resume-1.png", "/assets/resume-2.png"]
@@ -29,6 +32,7 @@ function Projects() {
         {
             title: "CornCob Compiler",
             description: "The CornCob Compiler is a program language compiler developed to compile my professors CornCob programming language into LLVM.",
+            imageDescription: "Compiler front-end and LLVM IR code generation.",
             techs: ["LLVM", "Compilers", "C++"],
             image: "/assets/website-thumb.png",
             images: ["/assets/website-1.png", "/assets/website-2.png"]
@@ -36,6 +40,7 @@ function Projects() {
         {
             title: "BOM CAT",
             description: "A Bill of Materials machine learning categorization tool that I lead a team to build for our capstone for DMSI.",
+            imageDescription: "Automated BOM categorization with ML models.",
             techs: ["Python", "PyTorch", "ML"],
             image: "/assets/resume-thumb.png",
             images: ["/assets/resume-1.png", "/assets/resume-2.png"]
@@ -43,6 +48,7 @@ function Projects() {
         {
             title: "RateMyClass",
             description: "A MVC weba application that allows users to rate and review their classes and professors.",
+            imageDescription: "Course & instructor ratings with user accounts.",
             techs: ["ASP.NET", "MVC", "SQL"],
             image: "/assets/website-thumb.png",
             images: ["/assets/website-1.png", "/assets/website-2.png"]
@@ -50,6 +56,7 @@ function Projects() {
         {
             title: "UML Diagram Generator",
             description: "A tool for generating UML diagrams from a structured text input.",
+            imageDescription: "Text-to-UML rendering with SVG export.",
             techs: ["TypeScript", "D3", "SVG"],
             image: "/assets/resume-thumb.png",
             images: ["/assets/resume-1.png", "/assets/resume-2.png"]
@@ -57,6 +64,7 @@ function Projects() {
         {
             title: "Field Vision",
             description: "A Virtual Reality application for recruitment events that was developed as part of my first capstone.",
+            imageDescription: "Recruitment VR experience with interactive scenes.",
             techs: ["Unity", "C#", "VR"],
             image: "/assets/website-thumb.png",
             images: ["/assets/website-1.png", "/assets/website-2.png"]
@@ -64,6 +72,7 @@ function Projects() {
         {
             title: "Eye Tracking Experiment",
             description: "An experiment I ran as part of a class to analyze the effects of coding themes in IDEs on eye tracking metrics.",
+            imageDescription: "Study of IDE themes and eye behavior during coding tasks.",
             techs: ["Python", "Eye Tracking", "Research"],
             image: "/assets/resume-thumb.png",
             images: ["/assets/resume-1.png", "/assets/resume-2.png"]
@@ -106,20 +115,20 @@ function Projects() {
 
     // preview text crossfade state (prior text fades out, then new fades in)
     const [previewTitle, setPreviewTitle] = useState<string>(displayProject.title);
-    const [previewDesc, setPreviewDesc] = useState<string>(displayProject.description);
+    const [previewDesc, setPreviewDesc] = useState<string>(displayProject.imageDescription || '');
     const [textOpacity, setTextOpacity] = useState<number>(1);
     const textFadeTimer = useRef<number | null>(null);
     const textCrossTimer = useRef<number | null>(null);
 
     useEffect(() => {
-        if (displayProject.title === previewTitle && displayProject.description === previewDesc) return;
+        if (displayProject.title === previewTitle && (displayProject.imageDescription || '') === previewDesc) return;
         // fade out current text
         setTextOpacity(0);
         if (textFadeTimer.current) window.clearTimeout(textFadeTimer.current);
         textFadeTimer.current = window.setTimeout(() => {
             // swap to new text
             setPreviewTitle(displayProject.title);
-            setPreviewDesc(displayProject.description);
+            setPreviewDesc(displayProject.imageDescription || '');
             // then fade in
             if (textCrossTimer.current) window.clearTimeout(textCrossTimer.current);
             textCrossTimer.current = window.setTimeout(() => setTextOpacity(1), 60);
@@ -129,7 +138,7 @@ function Projects() {
             if (textFadeTimer.current) { window.clearTimeout(textFadeTimer.current); textFadeTimer.current = null; }
             if (textCrossTimer.current) { window.clearTimeout(textCrossTimer.current); textCrossTimer.current = null; }
         };
-    }, [displayProject.title, displayProject.description]);
+    }, [displayProject.title, displayProject.imageDescription]);
 
     // Calculate padding so the first and last cards can be scrolled to the center
     const recalcPadding = () => {
