@@ -7,9 +7,12 @@ interface ProjectBoxProps {
     modalDescription?: string;
     image: string;
     images?: string[]; // for modal, optional
+    onHover?: (image: string) => void;
+    onLeave?: () => void;
+    onSelect?: () => void;
 }
 
-const ProjectBox: React.FC<ProjectBoxProps> = ({ title, description, modalDescription, image, images }) => {
+const ProjectBox: React.FC<ProjectBoxProps> = ({ title, description, modalDescription, image, images, onHover, onLeave, onSelect }) => {
     const [showModal, setShowModal] = useState(false);
     const [hovered, setHovered] = useState(false);
     return (
@@ -30,9 +33,9 @@ const ProjectBox: React.FC<ProjectBoxProps> = ({ title, description, modalDescri
                     cursor: 'pointer',
                     transform: hovered ? 'scale(1.025)' : 'scale(1)',
                 }}
-                onMouseEnter={() => setHovered(true)}
-                onMouseLeave={() => setHovered(false)}
-                onClick={() => setShowModal(true)}
+                onMouseEnter={() => { setHovered(true); onHover && onHover(image); }}
+                onMouseLeave={() => { setHovered(false); onLeave && onLeave(); }}
+                onClick={() => { setShowModal(true); onSelect && onSelect(); }}
             >
                 <img src={image} alt={title} style={{ width: 96, height: 96, borderRadius: 12, objectFit: 'cover', background: '#eee' }} />
                 <div>

@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import ProjectBox from './ProjectBox';
 
 
@@ -60,6 +61,10 @@ function Projects() {
         }
     ];
 
+    const [selectedIndex, setSelectedIndex] = useState<number>(0);
+    const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+
+    const displayProject = hoverIndex !== null ? projects[hoverIndex] : projects[selectedIndex];
 
     return (
         <div style={{ 
@@ -67,39 +72,62 @@ function Projects() {
             height: 'calc(100vh - 80px)', 
             overflow: 'hidden',
             display: 'flex',
-            flexDirection: 'column',
             position: 'relative'
         }}>
-            <div 
-                className="projects-scroll-container"
-                style={{
-                    flex: 1,
-                    overflowX: 'hidden',
-                    overflowY: 'auto',
-                    padding: '0 2rem 2rem 2rem',
-                    scrollBehavior: 'smooth',
-                    WebkitOverflowScrolling: 'touch',
-                    scrollbarWidth: 'thin',
-                    scrollbarColor: 'rgba(0,0,0,0.3) transparent',
-                    position: 'relative'
-                }}
-            >
+            <div style={{ display: 'flex', width: '100%', height: '100%' }}>
+                {/* Left: Scrollable list of project cards */}
+                <div 
+                    className="projects-scroll-container"
+                    style={{
+                        width: '50%',
+                        minWidth: 320,
+                        overflowX: 'hidden',
+                        overflowY: 'auto',
+                        padding: '0 2rem 2rem 2rem',
+                        scrollBehavior: 'smooth',
+                        WebkitOverflowScrolling: 'touch',
+                        position: 'relative'
+                    }}
+                >
+                    <div style={{
+                        maxWidth: '900px',
+                        margin: '0 auto',
+                        width: '90%',
+                        paddingTop: '1rem'
+                    }}>
+                        {projects.map((project, index) => (
+                            <ProjectBox
+                                key={index}
+                                title={project.title}
+                                description={project.description}
+                                modalDescription={project.modalDescription}
+                                image={project.image}
+                                images={project.images}
+                                onHover={() => setHoverIndex(index)}
+                                onLeave={() => setHoverIndex(null)}
+                                onSelect={() => setSelectedIndex(index)}
+                            />
+                        ))}
+                    </div>
+                </div>
+
+                {/* Right: Image / preview panel */}
                 <div style={{
-                    maxWidth: '1300px',
-                    margin: '0 auto',
-                    width: '90%',
-                    paddingTop: '1rem'
+                    width: '50%',
+                    minWidth: 320,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '2rem',
+                    boxSizing: 'border-box'
                 }}>
-                    {projects.map((project, index) => (
-                        <ProjectBox
-                            key={index}
-                            title={project.title}
-                            description={project.description}
-                            modalDescription={project.modalDescription}
-                            image={project.image}
-                            images={project.images}
-                        />
-                    ))}
+                    <div className="projects-preview" style={{ textAlign: 'center', width: '100%', maxWidth: '900px' }}>
+                        <div className="preview-frame" style={{ borderRadius: 14, overflow: 'hidden', boxShadow: '0 8px 40px rgba(0,0,0,0.12)', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <img className="preview-image" src={displayProject.image} alt={displayProject.title} style={{ width: '100%', display: 'block' }} />
+                        </div>
+                        <h3 style={{ marginTop: '1rem' }}>{displayProject.title}</h3>
+                        <p style={{ color: '#666' }}>{displayProject.description}</p>
+                    </div>
                 </div>
             </div>
         </div>
