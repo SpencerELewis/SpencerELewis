@@ -7,31 +7,33 @@ interface ProjectBoxProps {
     modalDescription?: string;
     image: string;
     images?: string[]; // for modal, optional
+    isSelected?: boolean;
     onHover?: (image: string) => void;
     onLeave?: () => void;
     onSelect?: () => void;
 }
 
-const ProjectBox: React.FC<ProjectBoxProps> = ({ title, description, modalDescription, image, images, onHover, onLeave, onSelect }) => {
+const ProjectBox: React.FC<ProjectBoxProps> = ({ title, description, modalDescription, image, images, isSelected, onHover, onLeave, onSelect }) => {
     const [showModal, setShowModal] = useState(false);
     const [hovered, setHovered] = useState(false);
+    const isActive = hovered || !!isSelected;
     return (
         <>
             <div className="project-card"
                 style={{
                     borderRadius: '16px',
-                    boxShadow: hovered ? '0 4px 32px rgba(0,0,0,0.16)' : '0 2px 16px rgba(0,0,0,0.08)',
+                    boxShadow: isActive ? '0 8px 48px rgba(0,0,0,0.18)' : '0 2px 16px rgba(0,0,0,0.08)',
                     background: 'var(--bs-navbar-bg, var(--bs-body-bg, #fff))',
                     padding: '1.5rem',
                     margin: '1.5rem 0',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '1.5rem',
-                    transition: 'box-shadow 0.2s, transform 0.18s',
+                    transition: 'box-shadow 340ms cubic-bezier(0.2,0.8,0.2,1), transform 300ms',
                     minHeight: '160px',
                     width: '100%',
                     cursor: 'pointer',
-                    transform: hovered ? 'scale(1.025)' : 'scale(1)',
+                    transform: isActive ? 'scale(1.03)' : 'scale(1)',
                 }}
                 onMouseEnter={() => { setHovered(true); onHover && onHover(image); }}
                 onMouseLeave={() => { setHovered(false); onLeave && onLeave(); }}

@@ -62,7 +62,6 @@ function Projects() {
     ];
 
     const [selectedIndex, setSelectedIndex] = useState<number>(0);
-    const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
     const containerRef = useRef<HTMLDivElement | null>(null);
     const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -70,7 +69,58 @@ function Projects() {
     const ticking = useRef(false);
 
     // Right-side preview shows whichever project is centered in the scroll container
-    const displayProject = hoverIndex !== null ? projects[hoverIndex] : projects[selectedIndex];
+    const displayProject = projects[selectedIndex];
+    // preview image crossfade state
+    const fadeDuration = 320; // ms
+    const [previewSrc, setPreviewSrc] = useState<string>(displayProject.image);
+    const [imgOpacity, setImgOpacity] = useState<number>(1);
+    const fadeTimer = useRef<number | null>(null);
+    const crossTimer = useRef<number | null>(null);
+
+    useEffect(() => {
+        if (displayProject.image === previewSrc) return;
+        // fade out
+        setImgOpacity(0);
+        if (fadeTimer.current) window.clearTimeout(fadeTimer.current);
+        fadeTimer.current = window.setTimeout(() => {
+            setPreviewSrc(displayProject.image);
+            // tiny delay then fade in
+            if (crossTimer.current) window.clearTimeout(crossTimer.current);
+            crossTimer.current = window.setTimeout(() => setImgOpacity(1), 60);
+        }, fadeDuration);
+
+        return () => {
+            if (fadeTimer.current) { window.clearTimeout(fadeTimer.current); fadeTimer.current = null; }
+            if (crossTimer.current) { window.clearTimeout(crossTimer.current); crossTimer.current = null; }
+        };
+    }, [displayProject.image]);
+
+    // preview text crossfade state (prior text fades out, then new fades in)
+    const [previewTitle, setPreviewTitle] = useState<string>(displayProject.title);
+    const [previewDesc, setPreviewDesc] = useState<string>(displayProject.description);
+    const [textOpacity, setTextOpacity] = useState<number>(1);
+    const textFadeTimer = useRef<number | null>(null);
+    const textCrossTimer = useRef<number | null>(null);
+
+    useEffect(() => {
+        if (displayProject.title === previewTitle && displayProject.description === previewDesc) return;
+        // fade out current text
+        setTextOpacity(0);
+        if (textFadeTimer.current) window.clearTimeout(textFadeTimer.current);
+        textFadeTimer.current = window.setTimeout(() => {
+            // swap to new text
+            setPreviewTitle(displayProject.title);
+            setPreviewDesc(displayProject.description);
+            // then fade in
+            if (textCrossTimer.current) window.clearTimeout(textCrossTimer.current);
+            textCrossTimer.current = window.setTimeout(() => setTextOpacity(1), 60);
+        }, fadeDuration);
+
+        return () => {
+            if (textFadeTimer.current) { window.clearTimeout(textFadeTimer.current); textFadeTimer.current = null; }
+            if (textCrossTimer.current) { window.clearTimeout(textCrossTimer.current); textCrossTimer.current = null; }
+        };
+    }, [displayProject.title, displayProject.description]);
 
     // Calculate padding so the first and last cards can be scrolled to the center
     const recalcPadding = () => {
@@ -222,15 +272,19 @@ function Projects() {
                         width: '90%'
                     }}>
                         {projects.map((project, index) => (
-                            <div key={index} ref={el => itemRefs.current[index] = el} style={{ scrollSnapAlign: 'center' }}>
+                            <div key={index} ref={el => itemRefs.current[index] = el} style={{
+                                scrollSnapAlign: 'center',
+                                transition: 'transform 380ms cubic-bezier(0.2,0.8,0.2,1), opacity 300ms',
+                                transform: index === selectedIndex ? 'scale(1.03)' : 'scale(1)',
+                                opacity: index === selectedIndex ? 1 : 0.96
+                            }}>
                                 <ProjectBox
                                     title={project.title}
                                     description={project.description}
                                     modalDescription={project.modalDescription}
                                     image={project.image}
                                     images={project.images}
-                                    onHover={() => setHoverIndex(index)}
-                                    onLeave={() => setHoverIndex(null)}
+                                    isSelected={index === selectedIndex}
                                     onSelect={() => setSelectedIndex(index)}
                                 />
                             </div>
@@ -250,10 +304,20 @@ function Projects() {
                 }}>
                     <div className="projects-preview" style={{ textAlign: 'center', width: '100%', maxWidth: '900px' }}>
                         <div className="preview-frame" style={{ borderRadius: 14, overflow: 'hidden', boxShadow: '0 8px 40px rgba(0,0,0,0.12)', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <img className="preview-image" src={displayProject.image} alt={displayProject.title} style={{ width: '100%', display: 'block' }} />
+                            <img className="preview-image" src={previewSrc} alt={displayProject.title} style={{ width: '100%', display: 'block', opacity: imgOpacity, transition: `opacity ${fadeDuration}ms ease-in-out` }} />
                         </div>
-                        <h3 style={{ marginTop: '1rem' }}>{displayProject.title}</h3>
-                        <p style={{ color: '#666' }}>{displayProject.description}</p>
+                        <h3 style={{
+                            marginTop: '1rem',
+                            opacity: textOpacity,
+                            transform: `translateY(${textOpacity === 1 ? 0 : 6}px)`,
+                            transition: `opacity ${fadeDuration}ms ease-in-out, transform ${fadeDuration}ms ease-in-out`
+                        }}>{previewTitle}</h3>
+                        <p style={{
+                            color: '#666',
+                            opacity: textOpacity,
+                            transform: `translateY(${textOpacity === 1 ? 0 : 6}px)`,
+                            transition: `opacity ${fadeDuration}ms ease-in-out, transform ${fadeDuration}ms ease-in-out`
+                        }}>{previewDesc}</p>
                     </div>
                 </div>
             </div>
