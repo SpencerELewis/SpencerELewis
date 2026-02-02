@@ -57,16 +57,16 @@ const ProjectBox: React.FC<ProjectBoxProps> = ({ title, description, techs = [],
                 <div className="project-tech-list" style={{ marginTop: '0.75rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                     {techs.slice(0,6).map((t, i) => {
                         const meta = TECH_ICONS[t];
-                        return (
-                            <span key={i} className="project-tech-pill">
-                                {meta ? (
-                                    <span className="pill-icon" style={{ filter: `drop-shadow(0 0 3px ${meta.color})` }}>
-                                        <img src={`/coding icons/${meta.icon}`} alt={t} style={{ width: 18, height: 18, objectFit: 'contain' }} />
-                                    </span>
-                                ) : null}
-                                <span className="pill-label" style={{ marginLeft: meta ? 6 : 0 }}>{t}</span>
+                        return meta ? (
+                            <span key={i} className="project-tech-bg" title={t}>
+                                <img
+                                    className="project-tech-img"
+                                    alt={t}
+                                    src={`/coding icons/${meta.icon}`}
+                                    style={{ filter: `drop-shadow(0 0 3px ${meta.color})`, width: 28, height: 28, objectFit: 'contain' }}
+                                />
                             </span>
-                        );
+                        ) : null;
                     })}
                 </div>
             </div>
