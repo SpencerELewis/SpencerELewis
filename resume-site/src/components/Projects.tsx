@@ -93,6 +93,25 @@ function Projects() {
     const selectedIndexRef = useRef(selectedIndex);
     useEffect(() => { selectedIndexRef.current = selectedIndex; }, [selectedIndex]);
 
+    // Mobile detection (matches CSS breakpoint: max-width: 768px)
+    const [isMobile, setIsMobile] = useState<boolean>(typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(max-width: 768px)').matches : false);
+    useEffect(() => {
+        const mq = window.matchMedia('(max-width: 768px)');
+        const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+        setIsMobile(mq.matches);
+        if (mq.addEventListener) mq.addEventListener('change', onChange);
+        else mq.addListener(onChange);
+        return () => {
+            if (mq.removeEventListener) mq.removeEventListener('change', onChange);
+            else mq.removeListener(onChange);
+        };
+    }, []);
+
+    // Timer to detect scroll end on mobile and snap to closest card
+    const scrollEndTimer = useRef<number | null>(null);
+    // Track whether the user currently has touch contact so we only snap after release
+    const isTouching = useRef(false);
+
     // Right-side preview shows whichever project is centered in the scroll container
     const displayProject = projects[selectedIndex];
     // preview image crossfade state
@@ -175,9 +194,9 @@ function Projects() {
         container.scrollTo({ top: offsetTop, behavior });
     };
 
-    const updateCenteredIndex = () => {
+    const updateCenteredIndex = (commit = true) => {
         const container = containerRef.current;
-        if (!container) return;
+        if (!container) return 0;
         const containerRect = container.getBoundingClientRect();
         const containerCenterY = containerRect.top + containerRect.height / 2;
 
@@ -195,9 +214,12 @@ function Projects() {
             }
         });
 
-        if (closestIdx !== selectedIndex) {
-            setSelectedIndex(closestIdx);
+        if (commit) {
+            if (closestIdx !== selectedIndex) {
+                setSelectedIndex(closestIdx);
+            }
         }
+        return closestIdx;
     };
 
     useEffect(() => {
@@ -220,8 +242,23 @@ function Projects() {
             if (ticking.current) return;
             ticking.current = true;
             window.requestAnimationFrame(() => {
-                updateCenteredIndex();
+                // do not commit while the user is actively touching/dragging
+                const closest = updateCenteredIndex(!isTouching.current);
                 ticking.current = false;
+
+                if (isMobile) {
+                    if (isTouching.current) {
+                        // user is still touching — don't schedule snap yet
+                        if (scrollEndTimer.current) { window.clearTimeout(scrollEndTimer.current); scrollEndTimer.current = null; }
+                    } else {
+                        // debounce scroll end: when scrolling stops, snap to nearest card
+                        if (scrollEndTimer.current) window.clearTimeout(scrollEndTimer.current);
+                        scrollEndTimer.current = window.setTimeout(() => {
+                            scrollToCenter(closest, 'smooth');
+                            scrollEndTimer.current = null;
+                        }, 150);
+                    }
+                }
             });
         };
 
@@ -261,9 +298,27 @@ function Projects() {
             handleWheelDelta(e.deltaY);
         };
 
+        const onTouchStart = () => { isTouching.current = true; if (scrollEndTimer.current) { window.clearTimeout(scrollEndTimer.current); scrollEndTimer.current = null; } };
+        const onTouchEnd = () => {
+            isTouching.current = false;
+            // snap to closest after a short delay so momentum settles
+            const closest = updateCenteredIndex();
+            if (scrollEndTimer.current) window.clearTimeout(scrollEndTimer.current);
+            scrollEndTimer.current = window.setTimeout(() => {
+                scrollToCenter(closest, 'smooth');
+                scrollEndTimer.current = null;
+            }, 120);
+        };
+
         container.addEventListener('scroll', onScroll, { passive: true });
         container.addEventListener('wheel', onWheel, { passive: false });
         window.addEventListener('wheel', onWheelGlobal, { passive: false });
+
+        // touch/pointer events to detect contact and only snap after release
+        container.addEventListener('touchstart', onTouchStart, { passive: true });
+        container.addEventListener('touchend', onTouchEnd, { passive: true });
+        container.addEventListener('pointerdown', onTouchStart, { passive: true });
+        container.addEventListener('pointerup', onTouchEnd, { passive: true });
 
         updateCenteredIndex();
 
@@ -271,8 +326,13 @@ function Projects() {
             container.removeEventListener('scroll', onScroll);
             container.removeEventListener('wheel', onWheel);
             window.removeEventListener('wheel', onWheelGlobal);
+            container.removeEventListener('touchstart', onTouchStart);
+            container.removeEventListener('touchend', onTouchEnd);
+            container.removeEventListener('pointerdown', onTouchStart);
+            container.removeEventListener('pointerup', onTouchEnd);
+            if (scrollEndTimer.current) { window.clearTimeout(scrollEndTimer.current); scrollEndTimer.current = null; }
         };
-    }, [projects, selectedIndex]);
+    }, [projects, selectedIndex, isMobile]);
 
     // Enable Arrow key navigation after the user clicks anywhere on the page
     useEffect(() => {
