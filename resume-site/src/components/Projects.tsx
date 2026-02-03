@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import ProjectBox from './ProjectBox';
+import '../styles/projects.css';
 
 function Projects() {
     const projects = [
@@ -215,6 +216,7 @@ function Projects() {
             {/* Left Side - Scrollable Projects */}
             <div 
                 ref={containerRef}
+                className="projects-left-panel"
                 style={{
                     width: '50%',
                     height: '100%',
@@ -257,17 +259,18 @@ function Projects() {
             </div>
 
             {/* Right Side - Project Image Display */}
-            <div style={{
-                width: '50%',
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '4rem',
-                background: 'rgba(50, 50, 50, 0.9)',
-                boxSizing: 'border-box',
-            }}>
+            <div 
+                className="projects-right-panel"
+                style={{
+                    width: '50%',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '4rem',
+                    boxSizing: 'border-box',
+                }}>
                 <div style={{
                     maxWidth: '100%',
                     width: '100%',

@@ -1,0 +1,11 @@
+/* Projects component theming */
+.projects-left-panel,
+.projects-right-panel {
+  background: rgba(255, 255, 255, 0.9) !important;
+  transition: background 0.2s ease;
+}
+
+[data-bs-theme="dark"] .projects-left-panel,
+[data-bs-theme="dark"] .projects-right-panel {
+  background: rgba(50, 50, 50, 0.9) !important;
+}
