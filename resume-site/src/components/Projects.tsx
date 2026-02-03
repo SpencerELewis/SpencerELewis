@@ -71,6 +71,7 @@ function Projects() {
 
     const [selectedIndex, setSelectedIndex] = useState<number>(0);
     const [imageLoading, setImageLoading] = useState<boolean>(false);
+    const [isMobile, setIsMobile] = useState<boolean>(false);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
     const wheelAccumulator = useRef<number>(0);
@@ -81,6 +82,18 @@ function Projects() {
     useEffect(() => {
         selectedIndexRef.current = selectedIndex;
     }, [selectedIndex]);
+
+    // Handle screen size changes
+    useEffect(() => {
+        const checkScreenSize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        
+        checkScreenSize(); // Initial check
+        window.addEventListener('resize', checkScreenSize);
+        
+        return () => window.removeEventListener('resize', checkScreenSize);
+    }, []);
 
     // Handle wheel scrolling to change selected project
     useEffect(() => {
@@ -220,159 +233,203 @@ function Projects() {
             overflow: 'hidden',
             background: 'var(--bs-body-bg)',
         }}>
-            {/* Left Side - Scrollable Projects */}
-            <div 
-                ref={containerRef}
-                className="projects-left-panel"
-                style={{
-                    width: '50%',
-                    height: '100%',
-                    overflowY: 'auto',
-                    overflowX: 'hidden',
-                    padding: '2rem',
-                    scrollBehavior: 'smooth',
-                    WebkitOverflowScrolling: 'touch',
-                    background: 'rgba(50, 50, 50, 0.9)'
-                }}
-            >
-                <div style={{
-                    maxWidth: '600px',
-                    margin: '0 auto',
-                    paddingTop: '10vh',
-                    paddingBottom: '10vh',
-                }}>
-                    {projects.map((project, index) => (
-                        <div
-                            key={index}
-                            ref={el => { itemRefs.current[index] = el; }}
-                            onClick={() => handleProjectClick(index)}
-                            style={{
-                                marginBottom: '3rem',
-                                transition: 'all 0.3s ease',
-                                transform: index === selectedIndex ? 'scale(1.05)' : 'scale(1)',
-                                opacity: index === selectedIndex ? 1 : 0.7,
-                                cursor: 'pointer',
-                            }}
-                        >
-                            <ProjectBox
-                                title={project.title}
-                                description={project.description}
-                                techs={project.techs}
-                                isSelected={index === selectedIndex}
-                            />
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Right Side - Project Image Display */}
-            <div 
-                className="projects-right-panel"
-                style={{
-                    width: '50%',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '4rem',
-                    boxSizing: 'border-box',
-                }}>
-                <div style={{
-                    maxWidth: '100%',
-                    width: '100%',
-                    textAlign: 'center',
-                }}>
-                    {/* Image Container */}
+            {isMobile ? (
+                // Mobile Layout - Cards Only
+                <div 
+                    ref={containerRef}
+                    className="projects-left-panel"
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        overflowY: 'auto',
+                        overflowX: 'hidden',
+                        padding: '2rem',
+                        scrollBehavior: 'smooth',
+                        WebkitOverflowScrolling: 'touch',
+                    }}
+                >
                     <div style={{
-                        position: 'relative',
-                        marginBottom: '2rem',
-                        borderRadius: '16px',
-                        overflow: 'hidden',
-                        boxShadow: '0 10px 50px rgba(0, 0, 0, 0.15)',
-                        background: '#000',
-                        aspectRatio: '16 / 10',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
+                        maxWidth: '600px',
+                        margin: '0 auto',
+                        paddingTop: '2rem',
+                        paddingBottom: '2rem',
                     }}>
-                        {imageLoading && (
-                            <div style={{
-                                position: 'absolute',
-                                top: '50%',
-                                left: '50%',
-                                transform: 'translate(-50%, -50%)',
-                                color: '#fff',
-                                fontSize: '1rem',
-                            }}>
-                                Loading...
-                            </div>
-                        )}
-                        <img
-                            key={currentProject.image} // Force re-render on image change
-                            src={currentProject.image}
-                            alt={currentProject.title}
-                            onLoadStart={handleImageLoadStart}
-                            onLoad={handleImageLoad}
-                            style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover',
-                                transition: 'opacity 0.3s ease',
-                                opacity: imageLoading ? 0 : 1,
-                            }}
-                        />
-                    </div>
-
-                    {/* Project Info */}
-                    <h2 style={{
-                        margin: '0 0 1rem 0',
-                        fontSize: '2rem',
-                        fontWeight: '600',
-                        color: 'var(--bs-body-color)',
-                    }}>
-                        {currentProject.title}
-                    </h2>
-                    
-                    <p style={{
-                        margin: '0 0 1.5rem 0',
-                        fontSize: '1.1rem',
-                        color: 'var(--bs-secondary-color)',
-                        lineHeight: '1.6',
-                        maxWidth: '400px',
-                    }}>
-                        {currentProject.imageDescription}
-                    </p>
-
-                    {/* Project Navigation Indicators */}
-                    <div style={{
-                        display: 'flex',
-                        gap: '0.5rem',
-                        justifyContent: 'center',
-                        marginTop: '2rem',
-                    }}>
-                        {projects.map((_, index) => (
-                            <button
+                        {projects.map((project, index) => (
+                            <div
                                 key={index}
-                                onClick={() => setSelectedIndex(index)}
+                                ref={el => { itemRefs.current[index] = el; }}
                                 style={{
-                                    width: '12px',
-                                    height: '12px',
-                                    border: 'none',
-                                    borderRadius: '50%',
-                                    background: index === selectedIndex 
-                                        ? 'var(--bs-primary)' 
-                                        : 'var(--bs-border-color)',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s ease',
-                                    transform: index === selectedIndex ? 'scale(1.2)' : 'scale(1)',
+                                    marginBottom: '2rem',
+                                    transition: 'all 0.3s ease',
                                 }}
-                                aria-label={`Go to project ${index + 1}`}
-                            />
+                            >
+                                <ProjectBox
+                                    title={project.title}
+                                    description={project.description}
+                                    techs={project.techs}
+                                    isSelected={false}
+                                />
+                            </div>
                         ))}
                     </div>
                 </div>
-            </div>
+            ) : (
+                // Desktop Layout - Split View
+                <>
+                    {/* Left Side - Scrollable Projects */}
+                    <div 
+                        ref={containerRef}
+                        className="projects-left-panel"
+                        style={{
+                            width: '50%',
+                            height: '100%',
+                            overflowY: 'auto',
+                            overflowX: 'hidden',
+                            padding: '2rem',
+                            scrollBehavior: 'smooth',
+                            WebkitOverflowScrolling: 'touch',
+                        }}
+                    >
+                        <div style={{
+                            maxWidth: '600px',
+                            margin: '0 auto',
+                            paddingTop: '10vh',
+                            paddingBottom: '10vh',
+                        }}>
+                            {projects.map((project, index) => (
+                                <div
+                                    key={index}
+                                    ref={el => { itemRefs.current[index] = el; }}
+                                    onClick={() => handleProjectClick(index)}
+                                    style={{
+                                        marginBottom: '3rem',
+                                        transition: 'all 0.3s ease',
+                                        transform: index === selectedIndex ? 'scale(1.05)' : 'scale(1)',
+                                        opacity: index === selectedIndex ? 1 : 0.7,
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    <ProjectBox
+                                        title={project.title}
+                                        description={project.description}
+                                        techs={project.techs}
+                                        isSelected={index === selectedIndex}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Right Side - Project Image Display */}
+                    <div 
+                        className="projects-right-panel"
+                        style={{
+                            width: '50%',
+                            height: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '4rem',
+                            boxSizing: 'border-box',
+                        }}>
+                        <div style={{
+                            maxWidth: '100%',
+                            width: '100%',
+                            textAlign: 'center',
+                        }}>
+                            {/* Image Container */}
+                            <div style={{
+                                position: 'relative',
+                                marginBottom: '2rem',
+                                borderRadius: '16px',
+                                overflow: 'hidden',
+                                boxShadow: '0 10px 50px rgba(0, 0, 0, 0.15)',
+                                background: '#000',
+                                aspectRatio: '16 / 10',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}>
+                                {imageLoading && (
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: '50%',
+                                        left: '50%',
+                                        transform: 'translate(-50%, -50%)',
+                                        color: '#fff',
+                                        fontSize: '1rem',
+                                    }}>
+                                        Loading...
+                                    </div>
+                                )}
+                                <img
+                                    key={currentProject.image} // Force re-render on image change
+                                    src={currentProject.image}
+                                    alt={currentProject.title}
+                                    onLoadStart={handleImageLoadStart}
+                                    onLoad={handleImageLoad}
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                        transition: 'opacity 0.3s ease',
+                                        opacity: imageLoading ? 0 : 1,
+                                    }}
+                                />
+                            </div>
+
+                            {/* Project Info */}
+                            <h2 style={{
+                                margin: '0 0 1rem 0',
+                                fontSize: '2rem',
+                                fontWeight: '600',
+                                color: 'var(--bs-body-color)',
+                            }}>
+                                {currentProject.title}
+                            </h2>
+                            
+                            <p style={{
+                                margin: '0 0 1.5rem 0',
+                                fontSize: '1.1rem',
+                                color: 'var(--bs-secondary-color)',
+                                lineHeight: '1.6',
+                                maxWidth: '400px',
+                            }}>
+                                {currentProject.imageDescription}
+                            </p>
+
+                            {/* Project Navigation Indicators */}
+                            <div style={{
+                                display: 'flex',
+                                gap: '0.5rem',
+                                justifyContent: 'center',
+                                marginTop: '2rem',
+                            }}>
+                                {projects.map((_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setSelectedIndex(index)}
+                                        style={{
+                                            width: '12px',
+                                            height: '12px',
+                                            border: 'none',
+                                            borderRadius: '50%',
+                                            background: index === selectedIndex 
+                                                ? 'var(--bs-primary)' 
+                                                : 'var(--bs-border-color)',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s ease',
+                                            transform: index === selectedIndex ? 'scale(1.2)' : 'scale(1)',
+                                        }}
+                                        aria-label={`Go to project ${index + 1}`}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
         </div>
     );
 }
