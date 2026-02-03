@@ -88,26 +88,33 @@ function Projects() {
             e.preventDefault();
             
             const delta = e.deltaY;
-            const threshold = 400; // Higher threshold for smoother touchpad experience
+            const threshold = 800; // Higher threshold = less sensitive, requires more scrolling
             
-            // Clamp delta to prevent large swipes from causing issues
-            const maxDelta = 100; // Maximum delta per event
+            // More responsive delta clamping for smoother feel
+            const maxDelta = 100; // Smaller max delta for finer control
             const clampedDelta = Math.sign(delta) * Math.min(Math.abs(delta), maxDelta);
+            
+            // Apply smoothing factor to make accumulation more gradual
+            const smoothingFactor = 0.8;
+            const adjustedDelta = clampedDelta * smoothingFactor;
             
             // Reset any existing decay timeout
             if (decayTimeout.current) clearTimeout(decayTimeout.current);
             
             // Accumulate wheel delta
-            wheelAccumulator.current += clampedDelta;
+            wheelAccumulator.current += adjustedDelta;
             
-            // Set a new decay timeout to reset accumulator if no scrolling for a while
+            // Clear accumulator completely after a short delay when scrolling stops
             decayTimeout.current = setTimeout(() => {
-                wheelAccumulator.current = 0;
-            }, 750); // Reset after 750ms of no scrolling
+                wheelAccumulator.current = 0; // Complete reset to prevent janky extra jumps
+            }, 200); // Shorter timeout for immediate reset
             
             // Only trigger change when accumulated delta exceeds threshold
             if (Math.abs(wheelAccumulator.current) >= threshold) {
-                const direction = wheelAccumulator.current > 0 ? 1 : -1;
+                // Calculate movement strength based on accumulated scroll
+                const scrollStrength = Math.abs(wheelAccumulator.current);
+                const moveAmount = Math.min(Math.floor(scrollStrength / threshold), 1); // Max 1 project
+                const direction = wheelAccumulator.current > 0 ? moveAmount : -moveAmount;
                 const currentIndex = selectedIndexRef.current;
                 let newIndex = currentIndex + direction;
                 
@@ -118,7 +125,7 @@ function Projects() {
                     setSelectedIndex(newIndex);
                 }
                 
-                // Reset accumulator after triggering change
+                // Complete reset to prevent any additional jumps
                 wheelAccumulator.current = 0;
                 if (decayTimeout.current) clearTimeout(decayTimeout.current);
             }
