@@ -72,6 +72,14 @@ function Projects() {
     const [imageLoading, setImageLoading] = useState<boolean>(false);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
+    const wheelAccumulator = useRef<number>(0);
+    const selectedIndexRef = useRef<number>(selectedIndex);
+    const decayTimeout = useRef<number | null>(null);
+
+    // Keep ref in sync with state
+    useEffect(() => {
+        selectedIndexRef.current = selectedIndex;
+    }, [selectedIndex]);
 
     // Handle wheel scrolling to change selected project
     useEffect(() => {
@@ -79,14 +87,39 @@ function Projects() {
             e.preventDefault();
             
             const delta = e.deltaY;
-            const threshold = 50; // Sensitivity threshold
+            const threshold = 400; // Higher threshold for smoother touchpad experience
             
-            if (Math.abs(delta) > threshold) {
-                if (delta > 0 && selectedIndex < projects.length - 1) {
-                    setSelectedIndex(selectedIndex + 1);
-                } else if (delta < 0 && selectedIndex > 0) {
-                    setSelectedIndex(selectedIndex - 1);
+            // Clamp delta to prevent large swipes from causing issues
+            const maxDelta = 100; // Maximum delta per event
+            const clampedDelta = Math.sign(delta) * Math.min(Math.abs(delta), maxDelta);
+            
+            // Reset any existing decay timeout
+            if (decayTimeout.current) clearTimeout(decayTimeout.current);
+            
+            // Accumulate wheel delta
+            wheelAccumulator.current += clampedDelta;
+            
+            // Set a new decay timeout to reset accumulator if no scrolling for a while
+            decayTimeout.current = setTimeout(() => {
+                wheelAccumulator.current = 0;
+            }, 750); // Reset after 750ms of no scrolling
+            
+            // Only trigger change when accumulated delta exceeds threshold
+            if (Math.abs(wheelAccumulator.current) >= threshold) {
+                const direction = wheelAccumulator.current > 0 ? 1 : -1;
+                const currentIndex = selectedIndexRef.current;
+                let newIndex = currentIndex + direction;
+                
+                // Clamp to valid range
+                newIndex = Math.max(0, Math.min(projects.length - 1, newIndex));
+                
+                if (newIndex !== currentIndex) {
+                    setSelectedIndex(newIndex);
                 }
+                
+                // Reset accumulator after triggering change
+                wheelAccumulator.current = 0;
+                if (decayTimeout.current) clearTimeout(decayTimeout.current);
             }
         };
 
@@ -95,7 +128,7 @@ function Projects() {
             container.addEventListener('wheel', handleWheel, { passive: false });
             return () => container.removeEventListener('wheel', handleWheel);
         }
-    }, [selectedIndex, projects.length]);
+    }, [projects.length]);
 
     // Handle keyboard navigation
     useEffect(() => {
@@ -190,6 +223,7 @@ function Projects() {
                     padding: '2rem',
                     scrollBehavior: 'smooth',
                     WebkitOverflowScrolling: 'touch',
+                    background: 'rgba(50, 50, 50, 0.9)'
                 }}
             >
                 <div style={{
@@ -231,7 +265,7 @@ function Projects() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 padding: '4rem',
-                background: 'var(--bs-secondary-bg, #f8f9fa)',
+                background: 'rgba(50, 50, 50, 0.9)',
                 boxSizing: 'border-box',
             }}>
                 <div style={{
@@ -296,7 +330,6 @@ function Projects() {
                         color: 'var(--bs-secondary-color)',
                         lineHeight: '1.6',
                         maxWidth: '400px',
-                        margin: '0 auto',
                     }}>
                         {currentProject.imageDescription}
                     </p>
