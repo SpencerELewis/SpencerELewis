@@ -176,6 +176,14 @@ function Projects() {
 
     // Calculate padding so the first and last cards can be scrolled to the center
     const recalcPadding = () => {
+        if (window.innerWidth <= 768) {
+            // On mobile, remove extra padding for free-flowing scroll
+            if (wrapperRef.current) {
+                wrapperRef.current.style.paddingTop = '0px';
+                wrapperRef.current.style.paddingBottom = '0px';
+            }
+            return;
+        }
         const container = containerRef.current;
         const firstItem = itemRefs.current[0];
         if (!container || !firstItem || !wrapperRef.current) return;
@@ -187,6 +195,7 @@ function Projects() {
     };
 
     const scrollToCenter = (index: number, behavior: ScrollBehavior = 'smooth') => {
+        if (window.innerWidth <= 768) return; // No locking on mobile
         const container = containerRef.current;
         const el = itemRefs.current[index];
         if (!container || !el) return;
@@ -195,6 +204,7 @@ function Projects() {
     };
 
     const updateCenteredIndex = (commit = true) => {
+        if (window.innerWidth <= 768) return selectedIndex; // No locking on mobile
         const container = containerRef.current;
         if (!container) return 0;
         const containerRect = container.getBoundingClientRect();
@@ -224,11 +234,13 @@ function Projects() {
 
     useEffect(() => {
         recalcPadding();
-        setTimeout(() => scrollToCenter(selectedIndex, 'auto'), 50);
+        if (window.innerWidth > 768) {
+            setTimeout(() => scrollToCenter(selectedIndex, 'auto'), 50);
+        }
 
         const onResize = () => {
             recalcPadding();
-            scrollToCenter(selectedIndex, 'auto');
+            if (window.innerWidth > 768) scrollToCenter(selectedIndex, 'auto');
         };
         window.addEventListener('resize', onResize);
         return () => window.removeEventListener('resize', onResize);
@@ -238,6 +250,9 @@ function Projects() {
         const container = containerRef.current;
         if (!container) return;
 
+        // On mobile, skip scroll locking logic entirely
+        if (window.innerWidth <= 768) return;
+
         const onScroll = () => {
             if (ticking.current) return;
             ticking.current = true;
@@ -245,20 +260,6 @@ function Projects() {
                 // do not commit while the user is actively touching/dragging
                 const closest = updateCenteredIndex(!isTouching.current);
                 ticking.current = false;
-
-                if (isMobile) {
-                    if (isTouching.current) {
-                        // user is still touching — don't schedule snap yet
-                        if (scrollEndTimer.current) { window.clearTimeout(scrollEndTimer.current); scrollEndTimer.current = null; }
-                    } else {
-                        // debounce scroll end: when scrolling stops, snap to nearest card
-                        if (scrollEndTimer.current) window.clearTimeout(scrollEndTimer.current);
-                        scrollEndTimer.current = window.setTimeout(() => {
-                            scrollToCenter(closest, 'smooth');
-                            scrollEndTimer.current = null;
-                        }, 150);
-                    }
-                }
             });
         };
 
@@ -314,22 +315,12 @@ function Projects() {
         container.addEventListener('wheel', onWheel, { passive: false });
         window.addEventListener('wheel', onWheelGlobal, { passive: false });
 
-        // touch/pointer events to detect contact and only snap after release
-        container.addEventListener('touchstart', onTouchStart, { passive: true });
-        container.addEventListener('touchend', onTouchEnd, { passive: true });
-        container.addEventListener('pointerdown', onTouchStart, { passive: true });
-        container.addEventListener('pointerup', onTouchEnd, { passive: true });
-
         updateCenteredIndex();
 
         return () => {
             container.removeEventListener('scroll', onScroll);
             container.removeEventListener('wheel', onWheel);
             window.removeEventListener('wheel', onWheelGlobal);
-            container.removeEventListener('touchstart', onTouchStart);
-            container.removeEventListener('touchend', onTouchEnd);
-            container.removeEventListener('pointerdown', onTouchStart);
-            container.removeEventListener('pointerup', onTouchEnd);
             if (scrollEndTimer.current) { window.clearTimeout(scrollEndTimer.current); scrollEndTimer.current = null; }
         };
     }, [projects, selectedIndex, isMobile]);
@@ -390,12 +381,11 @@ function Projects() {
                         overflowX: 'hidden',
                         overflowY: 'auto',
                         padding: '0 2rem',
-                        scrollBehavior: 'smooth',
                         WebkitOverflowScrolling: 'touch',
                         position: 'relative',
-                        // preferred browser-native fallback
-                        scrollSnapType: 'y mandatory',
-                        overscrollBehavior: 'contain'
+                        scrollSnapType: window.innerWidth > 768 ? 'y mandatory' : 'none',
+                        overscrollBehavior: 'contain',
+                        scrollBehavior: window.innerWidth > 768 ? 'smooth' : 'auto'
                     }}
                 >
                     <div ref={wrapperRef} style={{
