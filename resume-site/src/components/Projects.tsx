@@ -12,13 +12,13 @@ function Projects() {
             image: "/cards/jerOS2.png",
             images: ["/assets/vr-gallery-1.jpg", "/assets/vr-gallery-2.jpg"]
         },
-        
+
         {
             title: "BananaCam",
             description: "A machine learning powered webcam filter app for identifying bananas in real time.",
             imageDescription: "Real-time object detection using webcam and ML models.",
             techs: ["Python", "TensorFlow", "OpenCV"],
-            image: "/assets/portfolio-thumb.jpg",
+            image: "/cards/bancam.png",
             images: ["/assets/portfolio-1.jpg", "/assets/portfolio-2.jpg"]
         },
         {
@@ -372,16 +372,16 @@ function Projects() {
     }, [selectedIndex]);
 
     return (
-        <div style={{ 
-            width: '100%', 
-            height: 'calc(100vh - 80px)', 
+        <div style={{
+            width: '100%',
+            height: 'calc(100vh - 80px)',
             overflow: 'hidden',
             display: 'flex',
             position: 'relative'
         }}>
             <div style={{ display: 'flex', width: '100%', height: '100%' }}>
                 {/* Left: Scrollable list of project cards */}
-                <div 
+                <div
                     ref={containerRef}
                     className="projects-scroll-container"
                     style={{
@@ -433,29 +433,32 @@ function Projects() {
                 }}>
                     <div className="projects-preview" style={{ textAlign: 'center', width: '100%', maxWidth: '900px' }}>
                         <div className="preview-frame" style={{
-    borderRadius: 14,
-    overflow: 'hidden',
-    boxShadow: 'none',           // removed shadow
-    background: 'transparent',   // make frame transparent
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-}}>
-    <img
-        className="preview-image"
-        src={previewSrc}
-        alt={displayProject.title}
-        style={{
-            width: '100%',
-            height: 'auto',
-            display: 'block',
-            background: 'transparent',               // ensure no background shows
-            objectFit: 'contain',
-            opacity: imgOpacity,
-            transition: `opacity ${fadeDuration}ms ease-in-out`
-        }}
-    />
-</div>
+                            borderRadius: 14,
+                            overflow: 'hidden',
+                            boxShadow: 'none',           // removed shadow
+                            background: 'transparent',   // make frame transparent
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}>
+                            <img
+                                className="preview-image"
+                                src={previewSrc}
+                                alt={displayProject.title}
+                                style={{
+                                    width: 'auto',
+                                    maxWidth: '100%',
+                                    height: '100%',
+                                    maxHeight: 'calc(100vh - 200px)',
+                                    display: 'block',
+                                    background: 'transparent',
+                                    objectFit: 'contain',
+                                    objectPosition: 'center',
+                                    opacity: imgOpacity,
+                                    transition: `opacity ${fadeDuration}ms ease-in-out`
+                                }}
+                            />
+                        </div>
                         <h3 style={{
                             marginTop: '1rem',
                             opacity: textOpacity,

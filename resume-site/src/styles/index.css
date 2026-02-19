@@ -128,10 +128,17 @@ body {
 }
 
 .projects-preview .preview-image {
-  width: 100%;
+  width: 90%;
+  max-width: 600px;
+  min-width: 320px;
   height: 100%;
+  max-height: calc(100vh - 200px);
   object-fit: contain;
+  object-position: center;
   display: block;
+  border-radius: 16px;
+  border: 3px solid #fff;
+  box-sizing: border-box;
 }
 
 /* Fallback for browsers without aspect-ratio support */
@@ -141,8 +148,17 @@ body {
     max-height: calc(100vh - 200px);
   }
   .projects-preview .preview-image {
+    width: 90%;
+    max-width: 600px;
+    min-width: 320px;
+    height: 100%;
     max-height: calc(100vh - 200px);
-    height: auto;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    border-radius: 16px;
+    border: 3px solid #fff;
+    box-sizing: border-box;
   }
 }
 
