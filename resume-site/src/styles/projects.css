@@ -9,3 +9,20 @@
 [data-bs-theme="dark"] .projects-right-panel {
   background: rgba(50, 50, 50, 0.9) !important;
 }
+
+/* Desktop: visible, thin scrollbar for the projects scroll container */
+.projects-scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.18) transparent;
+  -ms-overflow-style: auto;
+}
+.projects-scroll-container::-webkit-scrollbar {
+  width: 10px;
+}
+.projects-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.18);
+  border-radius: 8px;
+}
+.projects-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}

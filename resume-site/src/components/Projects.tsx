@@ -86,8 +86,6 @@ function Projects() {
     const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
     const ticking = useRef(false);
 
-    // Shared wheel state refs so we can handle wheel gestures from anywhere on the page
-    const wheelAcc = useRef(0);
     // Enable keyboard navigation after a click anywhere on the page
     const keyboardEnabled = useRef(false);
     const selectedIndexRef = useRef(selectedIndex);
@@ -257,46 +255,41 @@ function Projects() {
             if (ticking.current) return;
             ticking.current = true;
             window.requestAnimationFrame(() => {
-                // do not commit while the user is actively touching/dragging
-                const closest = updateCenteredIndex(!isTouching.current);
+                // Compute the closest item but DO NOT commit while user is actively
+                // scrolling — committing on every frame causes programmatic
+                // scrollToCenter() to fight native scrolling and produce jitter.
+                const closest = updateCenteredIndex(false);
                 ticking.current = false;
+
+                // Debounce scroll end: wait for the user to stop scrolling, then
+                // commit the index and snap to center. This avoids mid-scroll jumps.
+                if (scrollEndTimer.current) window.clearTimeout(scrollEndTimer.current);
+                scrollEndTimer.current = window.setTimeout(() => {
+                    if (closest !== selectedIndexRef.current) {
+                        setSelectedIndex(closest);
+                    } else {
+                        // ensure precise centering even if index is unchanged
+                        scrollToCenter(closest, 'smooth');
+                    }
+                    scrollEndTimer.current = null;
+                }, 150);
             });
         };
 
-        const WHEEL_THRESHOLD = 40; // px-ish threshold
-
-        const handleWheelDelta = (deltaY: number) => {
-            if (Math.abs(deltaY) < 0.5) return;
-            wheelAcc.current += deltaY;
-
-            // trigger when accumulated delta exceeds threshold
-            if (Math.abs(wheelAcc.current) >= WHEEL_THRESHOLD) {
-                const dir = wheelAcc.current > 0 ? 1 : -1;
-                let next = selectedIndex + dir;
-                next = Math.max(0, Math.min(projects.length - 1, next));
-                if (next !== selectedIndex) {
-                    setSelectedIndex(next);
-                    scrollToCenter(next, 'smooth');
-                }
-                wheelAcc.current = 0;
-            }
-        };
-
+        // Let the browser handle wheel -> native scrolling so the scrollbar is visible and draggable.
+        // The onScroll handler (above) will update the centered index and preview.
         const onWheel = (e: WheelEvent) => {
-            // only handle vertical scrolling
             if (Math.abs(e.deltaY) < 0.5) return;
-            // prevent native scroll for precise snapping behavior
-            e.preventDefault();
-            handleWheelDelta(e.deltaY);
+            // no preventDefault here — allow native scrolling and scrollbar movement
         };
 
-        // Global handler: allow scrolling the left projects column from anywhere on the page
+        // Forward wheel events that originate outside the container into it so users can
+        // scroll the projects column from anywhere on the page (still uses native scroll).
         const onWheelGlobal = (e: WheelEvent) => {
-            // if the event originated inside the container, let it handle the event
+            if (!container) return;
             if (container.contains(e.target as Node)) return;
             if (Math.abs(e.deltaY) < 0.5) return;
-            e.preventDefault();
-            handleWheelDelta(e.deltaY);
+            container.scrollBy({ top: e.deltaY, behavior: 'auto' });
         };
 
         const onTouchStart = () => { isTouching.current = true; if (scrollEndTimer.current) { window.clearTimeout(scrollEndTimer.current); scrollEndTimer.current = null; } };
@@ -312,8 +305,14 @@ function Projects() {
         };
 
         container.addEventListener('scroll', onScroll, { passive: true });
-        container.addEventListener('wheel', onWheel, { passive: false });
-        window.addEventListener('wheel', onWheelGlobal, { passive: false });
+        container.addEventListener('wheel', onWheel, { passive: true });
+        window.addEventListener('wheel', onWheelGlobal, { passive: true });
+
+        // touch/pointer events to detect contact and only snap after release
+        container.addEventListener('touchstart', onTouchStart, { passive: true });
+        container.addEventListener('touchend', onTouchEnd, { passive: true });
+        container.addEventListener('pointerdown', onTouchStart, { passive: true });
+        container.addEventListener('pointerup', onTouchEnd, { passive: true });
 
         updateCenteredIndex();
 
@@ -321,6 +320,10 @@ function Projects() {
             container.removeEventListener('scroll', onScroll);
             container.removeEventListener('wheel', onWheel);
             window.removeEventListener('wheel', onWheelGlobal);
+            container.removeEventListener('touchstart', onTouchStart);
+            container.removeEventListener('touchend', onTouchEnd);
+            container.removeEventListener('pointerdown', onTouchStart);
+            container.removeEventListener('pointerup', onTouchEnd);
             if (scrollEndTimer.current) { window.clearTimeout(scrollEndTimer.current); scrollEndTimer.current = null; }
         };
     }, [projects, selectedIndex, isMobile]);

@@ -113,6 +113,26 @@ body {
   display: none; /* Chrome, Safari, Opera */
 }
 
+/* Show native scrollbar on desktop/laptop for discoverability */
+@media (min-width: 769px) {
+  .projects-scroll-container {
+    -ms-overflow-style: auto;
+    scrollbar-width: thin; /* Firefox */
+  }
+  .projects-scroll-container::-webkit-scrollbar {
+    width: 10px;
+  }
+  .projects-scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .projects-scroll-container::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.18);
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+}
+
 /* Projects preview responsive image — maintain aspect ratio and scale down */
 .projects-preview .preview-frame {
   width: 100%;
