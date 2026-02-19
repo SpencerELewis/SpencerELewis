@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import ProjectBox from './ProjectBox';
-import '../styles/projects.css';
+
 
 function Projects() {
     const projects = [
@@ -9,16 +9,16 @@ function Projects() {
             description: "A x86 Operating System currently in development.",
             imageDescription: "Exploring low-level OS concepts, bootloaders, and memory.",
             techs: ["C", "Assembly", "Operating Systems"],
-            image: "/cards/jerOS2.png",
+            image: "/assets/vr-gallery-thumb.jpg",
             images: ["/assets/vr-gallery-1.jpg", "/assets/vr-gallery-2.jpg"]
         },
-
+        
         {
             title: "BananaCam",
             description: "A machine learning powered webcam filter app for identifying bananas in real time.",
             imageDescription: "Real-time object detection using webcam and ML models.",
             techs: ["Python", "TensorFlow", "OpenCV"],
-            image: "/cards/bancam.png",
+            image: "/assets/portfolio-thumb.jpg",
             images: ["/assets/portfolio-1.jpg", "/assets/portfolio-2.jpg"]
         },
         {
@@ -176,14 +176,6 @@ function Projects() {
 
     // Calculate padding so the first and last cards can be scrolled to the center
     const recalcPadding = () => {
-        if (window.innerWidth <= 768) {
-            // On mobile, remove extra padding for free-flowing scroll
-            if (wrapperRef.current) {
-                wrapperRef.current.style.paddingTop = '0px';
-                wrapperRef.current.style.paddingBottom = '0px';
-            }
-            return;
-        }
         const container = containerRef.current;
         const firstItem = itemRefs.current[0];
         if (!container || !firstItem || !wrapperRef.current) return;
@@ -195,7 +187,6 @@ function Projects() {
     };
 
     const scrollToCenter = (index: number, behavior: ScrollBehavior = 'smooth') => {
-        if (window.innerWidth <= 768) return; // No locking on mobile
         const container = containerRef.current;
         const el = itemRefs.current[index];
         if (!container || !el) return;
@@ -204,7 +195,6 @@ function Projects() {
     };
 
     const updateCenteredIndex = (commit = true) => {
-        if (window.innerWidth <= 768) return selectedIndex; // No locking on mobile
         const container = containerRef.current;
         if (!container) return 0;
         const containerRect = container.getBoundingClientRect();
@@ -234,13 +224,11 @@ function Projects() {
 
     useEffect(() => {
         recalcPadding();
-        if (window.innerWidth > 768) {
-            setTimeout(() => scrollToCenter(selectedIndex, 'auto'), 50);
-        }
+        setTimeout(() => scrollToCenter(selectedIndex, 'auto'), 50);
 
         const onResize = () => {
             recalcPadding();
-            if (window.innerWidth > 768) scrollToCenter(selectedIndex, 'auto');
+            scrollToCenter(selectedIndex, 'auto');
         };
         window.addEventListener('resize', onResize);
         return () => window.removeEventListener('resize', onResize);
@@ -250,9 +238,6 @@ function Projects() {
         const container = containerRef.current;
         if (!container) return;
 
-        // On mobile, skip scroll locking logic entirely
-        if (window.innerWidth <= 768) return;
-
         const onScroll = () => {
             if (ticking.current) return;
             ticking.current = true;
@@ -260,6 +245,20 @@ function Projects() {
                 // do not commit while the user is actively touching/dragging
                 const closest = updateCenteredIndex(!isTouching.current);
                 ticking.current = false;
+
+                if (isMobile) {
+                    if (isTouching.current) {
+                        // user is still touching — don't schedule snap yet
+                        if (scrollEndTimer.current) { window.clearTimeout(scrollEndTimer.current); scrollEndTimer.current = null; }
+                    } else {
+                        // debounce scroll end: when scrolling stops, snap to nearest card
+                        if (scrollEndTimer.current) window.clearTimeout(scrollEndTimer.current);
+                        scrollEndTimer.current = window.setTimeout(() => {
+                            scrollToCenter(closest, 'smooth');
+                            scrollEndTimer.current = null;
+                        }, 150);
+                    }
+                }
             });
         };
 
@@ -315,12 +314,22 @@ function Projects() {
         container.addEventListener('wheel', onWheel, { passive: false });
         window.addEventListener('wheel', onWheelGlobal, { passive: false });
 
+        // touch/pointer events to detect contact and only snap after release
+        container.addEventListener('touchstart', onTouchStart, { passive: true });
+        container.addEventListener('touchend', onTouchEnd, { passive: true });
+        container.addEventListener('pointerdown', onTouchStart, { passive: true });
+        container.addEventListener('pointerup', onTouchEnd, { passive: true });
+
         updateCenteredIndex();
 
         return () => {
             container.removeEventListener('scroll', onScroll);
             container.removeEventListener('wheel', onWheel);
             window.removeEventListener('wheel', onWheelGlobal);
+            container.removeEventListener('touchstart', onTouchStart);
+            container.removeEventListener('touchend', onTouchEnd);
+            container.removeEventListener('pointerdown', onTouchStart);
+            container.removeEventListener('pointerup', onTouchEnd);
             if (scrollEndTimer.current) { window.clearTimeout(scrollEndTimer.current); scrollEndTimer.current = null; }
         };
     }, [projects, selectedIndex, isMobile]);
@@ -363,16 +372,16 @@ function Projects() {
     }, [selectedIndex]);
 
     return (
-        <div style={{
-            width: '100%',
-            height: 'calc(100vh - 80px)',
+        <div style={{ 
+            width: '100%', 
+            height: 'calc(100vh - 80px)', 
             overflow: 'hidden',
             display: 'flex',
             position: 'relative'
         }}>
             <div style={{ display: 'flex', width: '100%', height: '100%' }}>
                 {/* Left: Scrollable list of project cards */}
-                <div
+                <div 
                     ref={containerRef}
                     className="projects-scroll-container"
                     style={{
@@ -381,11 +390,12 @@ function Projects() {
                         overflowX: 'hidden',
                         overflowY: 'auto',
                         padding: '0 2rem',
+                        scrollBehavior: 'smooth',
                         WebkitOverflowScrolling: 'touch',
                         position: 'relative',
-                        scrollSnapType: window.innerWidth > 768 ? 'y mandatory' : 'none',
-                        overscrollBehavior: 'contain',
-                        scrollBehavior: window.innerWidth > 768 ? 'smooth' : 'auto'
+                        // preferred browser-native fallback
+                        scrollSnapType: 'y mandatory',
+                        overscrollBehavior: 'contain'
                     }}
                 >
                     <div ref={wrapperRef} style={{
@@ -422,32 +432,8 @@ function Projects() {
                     boxSizing: 'border-box'
                 }}>
                     <div className="projects-preview" style={{ textAlign: 'center', width: '100%', maxWidth: '900px' }}>
-                        <div className="preview-frame" style={{
-                            borderRadius: 14,
-                            overflow: 'hidden',
-                            boxShadow: 'none',           // removed shadow
-                            background: 'transparent',   // make frame transparent
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}>
-                            <img
-                                className="preview-image"
-                                src={previewSrc}
-                                alt={displayProject.title}
-                                style={{
-                                    width: 'auto',
-                                    maxWidth: '100%',
-                                    height: '100%',
-                                    maxHeight: 'calc(100vh - 200px)',
-                                    display: 'block',
-                                    background: 'transparent',
-                                    objectFit: 'contain',
-                                    objectPosition: 'center',
-                                    opacity: imgOpacity,
-                                    transition: `opacity ${fadeDuration}ms ease-in-out`
-                                }}
-                            />
+                        <div className="preview-frame" style={{ borderRadius: 14, overflow: 'hidden', boxShadow: '0 8px 40px rgba(0,0,0,0.12)', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <img className="preview-image" src={previewSrc} alt={displayProject.title} style={{ width: '100%', display: 'block', opacity: imgOpacity, transition: `opacity ${fadeDuration}ms ease-in-out` }} />
                         </div>
                         <h3 style={{
                             marginTop: '1rem',
