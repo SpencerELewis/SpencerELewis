@@ -9,7 +9,7 @@ function Projects() {
             description: "A x86 Operating System currently in development.",
             imageDescription: "Exploring low-level OS concepts, bootloaders, and memory.",
             techs: ["C", "Assembly", "Operating Systems"],
-            image: "/assets/vr-gallery-thumb.jpg",
+            image: "/cards/jerOS2.png",
             images: ["/assets/vr-gallery-1.jpg", "/assets/vr-gallery-2.jpg"]
         },
         
@@ -432,9 +432,30 @@ function Projects() {
                     boxSizing: 'border-box'
                 }}>
                     <div className="projects-preview" style={{ textAlign: 'center', width: '100%', maxWidth: '900px' }}>
-                        <div className="preview-frame" style={{ borderRadius: 14, overflow: 'hidden', boxShadow: '0 8px 40px rgba(0,0,0,0.12)', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <img className="preview-image" src={previewSrc} alt={displayProject.title} style={{ width: '100%', display: 'block', opacity: imgOpacity, transition: `opacity ${fadeDuration}ms ease-in-out` }} />
-                        </div>
+                        <div className="preview-frame" style={{
+    borderRadius: 14,
+    overflow: 'hidden',
+    boxShadow: 'none',           // removed shadow
+    background: 'transparent',   // make frame transparent
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+}}>
+    <img
+        className="preview-image"
+        src={previewSrc}
+        alt={displayProject.title}
+        style={{
+            width: '100%',
+            height: 'auto',
+            display: 'block',
+            background: 'transparent',               // ensure no background shows
+            objectFit: 'contain',
+            opacity: imgOpacity,
+            transition: `opacity ${fadeDuration}ms ease-in-out`
+        }}
+    />
+</div>
                         <h3 style={{
                             marginTop: '1rem',
                             opacity: textOpacity,
