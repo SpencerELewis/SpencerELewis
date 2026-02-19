@@ -2,407 +2,220 @@ import { useEffect, useRef, useState } from 'react';
 import ProjectBox from './ProjectBox';
 import '../styles/projects.css';
 
+const PROJECTS = [
+    { title: "JerichOS",            description: "A x86 Operating System currently in development.",                                                                imageDescription: "Exploring low-level OS concepts, bootloaders, and memory.",           techs: ["C", "Assembly", "Operating Systems"],  image: "/cards/jerOS2.png" },
+    { title: "BananaCam",           description: "A machine learning powered webcam filter app for identifying bananas in real time.",                             imageDescription: "Real-time object detection using webcam and ML models.",             techs: ["Python", "TensorFlow", "OpenCV"],       image: "/cards/bancam.png" },
+    { title: "TokenGuard",          description: "A middleware service for assessing risk and preventing stolen tokens from accessing APIs based on IPs.",          imageDescription: "Risk-based token validation and IP-based controls.",                 techs: ["Node.js", "Express", "Security"],       image: "/assets/resume-thumb.png" },
+    { title: "CornCob Compiler",    description: "The CornCob Compiler is a program language compiler developed to compile my professors CornCob programming language into LLVM.", imageDescription: "Compiler front-end and LLVM IR code generation.",  techs: ["LLVM", "Compilers", "C++"],             image: "/assets/website-thumb.png" },
+    { title: "BOM CAT",             description: "A Bill of Materials machine learning categorization tool that I lead a team to build for our capstone for DMSI.", imageDescription: "Automated BOM categorization with ML models.",                       techs: ["Python", "PyTorch", "ML"],              image: "/assets/resume-thumb.png" },
+    { title: "RateMyClass",         description: "A MVC weba application that allows users to rate and review their classes and professors.",                      imageDescription: "Course & instructor ratings with user accounts.",                    techs: ["ASP.NET", "MVC", "SQL"],                image: "/assets/website-thumb.png" },
+    { title: "UML Diagram Generator", description: "A tool for generating UML diagrams from a structured text input.",                                             imageDescription: "Text-to-UML rendering with SVG export.",                             techs: ["TypeScript", "D3", "SVG"],              image: "/assets/resume-thumb.png" },
+    { title: "Field Vision",        description: "A Virtual Reality application for recruitment events that was developed as part of my first capstone.",           imageDescription: "Recruitment VR experience with interactive scenes.",                 techs: ["Unity", "C#", "VR"],                    image: "/assets/website-thumb.png" },
+    { title: "Eye Tracking Experiment", description: "An experiment I ran as part of a class to analyze the effects of coding themes in IDEs on eye tracking metrics.", imageDescription: "Study of IDE themes and eye behavior during coding tasks.",    techs: ["Python", "Eye Tracking", "Research"],   image: "/assets/resume-thumb.png" },
+];
+
+const FADE = 320; // preview crossfade duration ms
+const MOBILE_BP = 768;
+const isMobile = () => window.innerWidth <= MOBILE_BP;
+
 function Projects() {
-    const projects = [
-        {
-            title: "JerichOS",
-            description: "A x86 Operating System currently in development.",
-            imageDescription: "Exploring low-level OS concepts, bootloaders, and memory.",
-            techs: ["C", "Assembly", "Operating Systems"],
-            image: "/cards/jerOS2.png",
-            images: ["/assets/vr-gallery-1.jpg", "/assets/vr-gallery-2.jpg"]
-        },
-
-        {
-            title: "BananaCam",
-            description: "A machine learning powered webcam filter app for identifying bananas in real time.",
-            imageDescription: "Real-time object detection using webcam and ML models.",
-            techs: ["Python", "TensorFlow", "OpenCV"],
-            image: "/cards/bancam.png",
-            images: ["/assets/portfolio-1.jpg", "/assets/portfolio-2.jpg"]
-        },
-        {
-            title: "TokenGuard",
-            description: "A middleware service for assessing risk and preventing stolen tokens from accessing APIs based on IPs.",
-            imageDescription: "Risk-based token validation and IP-based controls.",
-            techs: ["Node.js", "Express", "Security"],
-            image: "/assets/resume-thumb.png",
-            images: ["/assets/resume-1.png", "/assets/resume-2.png"]
-        },
-        {
-            title: "CornCob Compiler",
-            description: "The CornCob Compiler is a program language compiler developed to compile my professors CornCob programming language into LLVM.",
-            imageDescription: "Compiler front-end and LLVM IR code generation.",
-            techs: ["LLVM", "Compilers", "C++"],
-            image: "/assets/website-thumb.png",
-            images: ["/assets/website-1.png", "/assets/website-2.png"]
-        },
-        {
-            title: "BOM CAT",
-            description: "A Bill of Materials machine learning categorization tool that I lead a team to build for our capstone for DMSI.",
-            imageDescription: "Automated BOM categorization with ML models.",
-            techs: ["Python", "PyTorch", "ML"],
-            image: "/assets/resume-thumb.png",
-            images: ["/assets/resume-1.png", "/assets/resume-2.png"]
-        },
-        {
-            title: "RateMyClass",
-            description: "A MVC weba application that allows users to rate and review their classes and professors.",
-            imageDescription: "Course & instructor ratings with user accounts.",
-            techs: ["ASP.NET", "MVC", "SQL"],
-            image: "/assets/website-thumb.png",
-            images: ["/assets/website-1.png", "/assets/website-2.png"]
-        },
-        {
-            title: "UML Diagram Generator",
-            description: "A tool for generating UML diagrams from a structured text input.",
-            imageDescription: "Text-to-UML rendering with SVG export.",
-            techs: ["TypeScript", "D3", "SVG"],
-            image: "/assets/resume-thumb.png",
-            images: ["/assets/resume-1.png", "/assets/resume-2.png"]
-        },
-        {
-            title: "Field Vision",
-            description: "A Virtual Reality application for recruitment events that was developed as part of my first capstone.",
-            imageDescription: "Recruitment VR experience with interactive scenes.",
-            techs: ["Unity", "C#", "VR"],
-            image: "/assets/website-thumb.png",
-            images: ["/assets/website-1.png", "/assets/website-2.png"]
-        },
-        {
-            title: "Eye Tracking Experiment",
-            description: "An experiment I ran as part of a class to analyze the effects of coding themes in IDEs on eye tracking metrics.",
-            imageDescription: "Study of IDE themes and eye behavior during coding tasks.",
-            techs: ["Python", "Eye Tracking", "Research"],
-            image: "/assets/resume-thumb.png",
-            images: ["/assets/resume-1.png", "/assets/resume-2.png"]
-        }
-    ];
-
-    const [selectedIndex, setSelectedIndex] = useState<number>(0);
-
+    const [selectedIndex, setSelectedIndex] = useState(0);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
-    const ticking = useRef(false);
-
-    // Enable keyboard navigation after a click anywhere on the page
     const keyboardEnabled = useRef(false);
     const selectedIndexRef = useRef(selectedIndex);
     useEffect(() => { selectedIndexRef.current = selectedIndex; }, [selectedIndex]);
 
-    // Mobile detection (matches CSS breakpoint: max-width: 768px)
-    const [isMobile, setIsMobile] = useState<boolean>(typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(max-width: 768px)').matches : false);
-    useEffect(() => {
-        const mq = window.matchMedia('(max-width: 768px)');
-        const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-        setIsMobile(mq.matches);
-        if (mq.addEventListener) mq.addEventListener('change', onChange);
-        else mq.addListener(onChange);
-        return () => {
-            if (mq.removeEventListener) mq.removeEventListener('change', onChange);
-            else mq.removeListener(onChange);
-        };
-    }, []);
-
-    // Timer to detect scroll end on mobile and snap to closest card
-    const scrollEndTimer = useRef<number | null>(null);
-    // Track whether the user currently has touch contact so we only snap after release
-    const isTouching = useRef(false);
-
-    // Right-side preview shows whichever project is centered in the scroll container
-    const displayProject = projects[selectedIndex];
-    // preview image crossfade state
-    const fadeDuration = 320; // ms
-    const [previewSrc, setPreviewSrc] = useState<string>(displayProject.image);
-    const [imgOpacity, setImgOpacity] = useState<number>(1);
+    // ── preview crossfade ────────────────────────────────────────────────────
+    const displayProject = PROJECTS[selectedIndex];
+    const [previewSrc, setPreviewSrc] = useState(displayProject.image);
+    const [imgOpacity, setImgOpacity] = useState(1);
+    const [previewTitle, setPreviewTitle] = useState(displayProject.title);
+    const [previewDesc, setPreviewDesc] = useState(displayProject.imageDescription);
+    const [textOpacity, setTextOpacity] = useState(1);
     const fadeTimer = useRef<number | null>(null);
     const crossTimer = useRef<number | null>(null);
-
-    useEffect(() => {
-        // If the preview already matches the requested project, ensure it's visible
-        if (displayProject.image === previewSrc) {
-            if (imgOpacity === 0) setImgOpacity(1);
-            return;
-        }
-        // fade out then swap image and fade in
-        setImgOpacity(0);
-        if (fadeTimer.current) window.clearTimeout(fadeTimer.current);
-        fadeTimer.current = window.setTimeout(() => {
-            setPreviewSrc(displayProject.image);
-            // tiny delay then fade in
-            if (crossTimer.current) window.clearTimeout(crossTimer.current);
-            crossTimer.current = window.setTimeout(() => setImgOpacity(1), 60);
-        }, fadeDuration);
-
-        return () => {
-            if (fadeTimer.current) { window.clearTimeout(fadeTimer.current); fadeTimer.current = null; }
-            if (crossTimer.current) { window.clearTimeout(crossTimer.current); crossTimer.current = null; }
-        };
-    }, [displayProject.image, previewSrc, imgOpacity]);
-
-    // preview text crossfade state (prior text fades out, then new fades in)
-    const [previewTitle, setPreviewTitle] = useState<string>(displayProject.title);
-    const [previewDesc, setPreviewDesc] = useState<string>(displayProject.imageDescription || '');
-    const [textOpacity, setTextOpacity] = useState<number>(1);
     const textFadeTimer = useRef<number | null>(null);
     const textCrossTimer = useRef<number | null>(null);
 
     useEffect(() => {
-        const desc = displayProject.imageDescription || '';
-        if (displayProject.title === previewTitle && desc === previewDesc) {
-            if (textOpacity === 0) setTextOpacity(1);
-            return;
-        }
-        // fade out current text
+        if (displayProject.image === previewSrc) { if (imgOpacity === 0) setImgOpacity(1); return; }
+        setImgOpacity(0);
+        if (fadeTimer.current) window.clearTimeout(fadeTimer.current);
+        fadeTimer.current = window.setTimeout(() => {
+            setPreviewSrc(displayProject.image);
+            if (crossTimer.current) window.clearTimeout(crossTimer.current);
+            crossTimer.current = window.setTimeout(() => setImgOpacity(1), 60);
+        }, FADE);
+        return () => { window.clearTimeout(fadeTimer.current!); window.clearTimeout(crossTimer.current!); };
+    }, [displayProject.image]);
+
+    useEffect(() => {
+        const desc = displayProject.imageDescription;
+        if (displayProject.title === previewTitle && desc === previewDesc) { if (textOpacity === 0) setTextOpacity(1); return; }
         setTextOpacity(0);
         if (textFadeTimer.current) window.clearTimeout(textFadeTimer.current);
         textFadeTimer.current = window.setTimeout(() => {
-            // swap to new text
             setPreviewTitle(displayProject.title);
             setPreviewDesc(desc);
-            // then fade in
             if (textCrossTimer.current) window.clearTimeout(textCrossTimer.current);
             textCrossTimer.current = window.setTimeout(() => setTextOpacity(1), 60);
-        }, fadeDuration);
+        }, FADE);
+        return () => { window.clearTimeout(textFadeTimer.current!); window.clearTimeout(textCrossTimer.current!); };
+    }, [displayProject.title, displayProject.imageDescription]);
 
-        return () => {
-            if (textFadeTimer.current) { window.clearTimeout(textFadeTimer.current); textFadeTimer.current = null; }
-            if (textCrossTimer.current) { window.clearTimeout(textCrossTimer.current); textCrossTimer.current = null; }
-        };
-    }, [displayProject.title, displayProject.imageDescription, previewTitle, previewDesc, textOpacity]);
-
-    // Calculate padding so the first and last cards can be scrolled to the center
+    // ── padding so first/last cards can reach the centre ──────────────────────
     const recalcPadding = () => {
-        if (window.innerWidth <= 768) {
-            // On mobile, remove extra padding for free-flowing scroll
-            if (wrapperRef.current) {
-                wrapperRef.current.style.paddingTop = '0px';
-                wrapperRef.current.style.paddingBottom = '0px';
-            }
-            return;
-        }
         const container = containerRef.current;
         const firstItem = itemRefs.current[0];
         if (!container || !firstItem || !wrapperRef.current) return;
-        const containerH = container.clientHeight;
-        const itemH = firstItem.clientHeight;
-        const pad = Math.max(0, Math.round(containerH / 2 - itemH / 2));
+        if (isMobile()) { wrapperRef.current.style.paddingTop = '0'; wrapperRef.current.style.paddingBottom = '0'; return; }
+        const pad = Math.max(0, Math.round(container.clientHeight / 2 - firstItem.clientHeight / 2));
         wrapperRef.current.style.paddingTop = pad + 'px';
         wrapperRef.current.style.paddingBottom = pad + 'px';
     };
 
     const scrollToCenter = (index: number, behavior: ScrollBehavior = 'smooth') => {
-        if (window.innerWidth <= 768) return; // No locking on mobile
+        if (isMobile()) return;
         const container = containerRef.current;
         const el = itemRefs.current[index];
         if (!container || !el) return;
-        const offsetTop = el.offsetTop - (container.clientHeight / 2 - el.clientHeight / 2);
-        container.scrollTo({ top: offsetTop, behavior });
-    };
-
-    const updateCenteredIndex = (commit = true) => {
-        if (window.innerWidth <= 768) return selectedIndex; // No locking on mobile
-        const container = containerRef.current;
-        if (!container) return 0;
-        const containerRect = container.getBoundingClientRect();
-        const containerCenterY = containerRect.top + containerRect.height / 2;
-
-        let closestIdx = 0;
-        let closestDist = Infinity;
-
-        itemRefs.current.forEach((el, idx) => {
-            if (!el) return;
-            const rect = el.getBoundingClientRect();
-            const elCenterY = rect.top + rect.height / 2;
-            const dist = Math.abs(elCenterY - containerCenterY);
-            if (dist < closestDist) {
-                closestDist = dist;
-                closestIdx = idx;
-            }
-        });
-
-        if (commit) {
-            if (closestIdx !== selectedIndex) {
-                setSelectedIndex(closestIdx);
-            }
-        }
-        return closestIdx;
+        container.scrollTo({ top: el.offsetTop - (container.clientHeight / 2 - el.clientHeight / 2), behavior });
     };
 
     useEffect(() => {
         recalcPadding();
-        if (window.innerWidth > 768) {
-            setTimeout(() => scrollToCenter(selectedIndex, 'auto'), 50);
-        }
-
-        const onResize = () => {
-            recalcPadding();
-            if (window.innerWidth > 768) scrollToCenter(selectedIndex, 'auto');
-        };
+        scrollToCenter(selectedIndex, 'auto');
+        const onResize = () => { recalcPadding(); scrollToCenter(selectedIndexRef.current, 'auto'); };
         window.addEventListener('resize', onResize);
         return () => window.removeEventListener('resize', onResize);
     }, []);
 
+    // ── scroll snapping on desktop ───────────────────────────────────────────
     useEffect(() => {
         const container = containerRef.current;
-        if (!container) return;
+        if (!container || isMobile()) return;
 
-        // On mobile, skip scroll locking logic entirely
-        if (window.innerWidth <= 768) return;
+        const scrollEndTimer = { current: null as number | null };
+        const isTouching = { current: false };
 
+        const findClosest = () => {
+            const mid = container.getBoundingClientRect().top + container.clientHeight / 2;
+            let idx = 0, best = Infinity;
+            itemRefs.current.forEach((el, i) => {
+                if (!el) return;
+                const d = Math.abs(el.getBoundingClientRect().top + el.clientHeight / 2 - mid);
+                if (d < best) { best = d; idx = i; }
+            });
+            return idx;
+        };
+
+        const scheduleSnap = (closest: number, delay = 150) => {
+            if (scrollEndTimer.current) window.clearTimeout(scrollEndTimer.current);
+            scrollEndTimer.current = window.setTimeout(() => {
+                if (closest !== selectedIndexRef.current) setSelectedIndex(closest);
+                else scrollToCenter(closest, 'smooth');
+                scrollEndTimer.current = null;
+            }, delay);
+        };
+
+        let ticking = false;
         const onScroll = () => {
-            if (ticking.current) return;
-            ticking.current = true;
+            if (ticking) return;
+            ticking = true;
             window.requestAnimationFrame(() => {
-                // Compute the closest item but DO NOT commit while user is actively
-                // scrolling — committing on every frame causes programmatic
-                // scrollToCenter() to fight native scrolling and produce jitter.
-                const closest = updateCenteredIndex(false);
-                ticking.current = false;
-
-                // Debounce scroll end: wait for the user to stop scrolling, then
-                // commit the index and snap to center. This avoids mid-scroll jumps.
-                if (scrollEndTimer.current) window.clearTimeout(scrollEndTimer.current);
-                scrollEndTimer.current = window.setTimeout(() => {
-                    if (closest !== selectedIndexRef.current) {
-                        setSelectedIndex(closest);
-                    } else {
-                        // ensure precise centering even if index is unchanged
-                        scrollToCenter(closest, 'smooth');
-                    }
-                    scrollEndTimer.current = null;
-                }, 150);
+                ticking = false;
+                scheduleSnap(findClosest());
             });
         };
 
-        // Let the browser handle wheel -> native scrolling so the scrollbar is visible and draggable.
-        // The onScroll handler (above) will update the centered index and preview.
-        const onWheel = (e: WheelEvent) => {
-            if (Math.abs(e.deltaY) < 0.5) return;
-            // no preventDefault here — allow native scrolling and scrollbar movement
-        };
-
-        // Forward wheel events that originate outside the container into it so users can
-        // scroll the projects column from anywhere on the page (still uses native scroll).
+        // Forward external wheel events into the container
         const onWheelGlobal = (e: WheelEvent) => {
-            if (!container) return;
-            if (container.contains(e.target as Node)) return;
-            if (Math.abs(e.deltaY) < 0.5) return;
+            if (!container || container.contains(e.target as Node) || Math.abs(e.deltaY) < 0.5) return;
             container.scrollBy({ top: e.deltaY, behavior: 'auto' });
         };
 
         const onTouchStart = () => { isTouching.current = true; if (scrollEndTimer.current) { window.clearTimeout(scrollEndTimer.current); scrollEndTimer.current = null; } };
-        const onTouchEnd = () => {
-            isTouching.current = false;
-            // snap to closest after a short delay so momentum settles
-            const closest = updateCenteredIndex();
-            if (scrollEndTimer.current) window.clearTimeout(scrollEndTimer.current);
-            scrollEndTimer.current = window.setTimeout(() => {
-                scrollToCenter(closest, 'smooth');
-                scrollEndTimer.current = null;
-            }, 120);
-        };
+        const onTouchEnd = () => { isTouching.current = false; scheduleSnap(findClosest(), 120); };
 
         container.addEventListener('scroll', onScroll, { passive: true });
-        container.addEventListener('wheel', onWheel, { passive: true });
         window.addEventListener('wheel', onWheelGlobal, { passive: true });
-
-        // touch/pointer events to detect contact and only snap after release
         container.addEventListener('touchstart', onTouchStart, { passive: true });
         container.addEventListener('touchend', onTouchEnd, { passive: true });
         container.addEventListener('pointerdown', onTouchStart, { passive: true });
         container.addEventListener('pointerup', onTouchEnd, { passive: true });
 
-        updateCenteredIndex();
-
         return () => {
             container.removeEventListener('scroll', onScroll);
-            container.removeEventListener('wheel', onWheel);
             window.removeEventListener('wheel', onWheelGlobal);
             container.removeEventListener('touchstart', onTouchStart);
             container.removeEventListener('touchend', onTouchEnd);
             container.removeEventListener('pointerdown', onTouchStart);
             container.removeEventListener('pointerup', onTouchEnd);
-            if (scrollEndTimer.current) { window.clearTimeout(scrollEndTimer.current); scrollEndTimer.current = null; }
+            if (scrollEndTimer.current) window.clearTimeout(scrollEndTimer.current);
         };
-    }, [projects, selectedIndex, isMobile]);
+    }, []);
 
-    // Enable Arrow key navigation after the user clicks anywhere on the page
+    // ── keyboard navigation ──────────────────────────────────────────────────
     useEffect(() => {
-        const onDocumentClick = () => { keyboardEnabled.current = true; };
-        const onKeyDown = (e: KeyboardEvent) => {
+        const onDocClick = () => { keyboardEnabled.current = true; };
+        const onKey = (e: KeyboardEvent) => {
             if (!keyboardEnabled.current) return;
+            const tag = ((document.activeElement as HTMLElement)?.tagName || '').toLowerCase();
+            if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
 
-            const active = document.activeElement as HTMLElement | null;
-            const tag = (active?.tagName || '').toLowerCase();
-            const isInput = tag === 'input' || tag === 'textarea' || tag === 'select' || (active?.isContentEditable);
-            if (isInput) return;
-
+            const cur = selectedIndexRef.current;
+            const last = PROJECTS.length - 1;
             if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
                 e.preventDefault();
-                const next = Math.min(projects.length - 1, selectedIndexRef.current + 1);
-                if (next !== selectedIndexRef.current) { setSelectedIndex(next); scrollToCenter(next, 'smooth'); }
+                const nxt = Math.min(last, cur + 1);
+                if (nxt !== cur) { setSelectedIndex(nxt); scrollToCenter(nxt); }
             } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
                 e.preventDefault();
-                const prev = Math.max(0, selectedIndexRef.current - 1);
-                if (prev !== selectedIndexRef.current) { setSelectedIndex(prev); scrollToCenter(prev, 'smooth'); }
+                const prv = Math.max(0, cur - 1);
+                if (prv !== cur) { setSelectedIndex(prv); scrollToCenter(prv); }
             } else if (e.key === 'Home') {
-                e.preventDefault();
-                setSelectedIndex(0); scrollToCenter(0, 'smooth');
+                e.preventDefault(); setSelectedIndex(0); scrollToCenter(0);
             } else if (e.key === 'End') {
-                e.preventDefault();
-                setSelectedIndex(projects.length - 1); scrollToCenter(projects.length - 1, 'smooth');
+                e.preventDefault(); setSelectedIndex(last); scrollToCenter(last);
             }
         };
+        document.addEventListener('click', onDocClick);
+        window.addEventListener('keydown', onKey);
+        return () => { document.removeEventListener('click', onDocClick); window.removeEventListener('keydown', onKey); };
+    }, []);
 
-        document.addEventListener('click', onDocumentClick);
-        window.addEventListener('keydown', onKeyDown);
-        return () => { document.removeEventListener('click', onDocumentClick); window.removeEventListener('keydown', onKeyDown); };
-    }, [projects.length]);
-
-    useEffect(() => {
-        scrollToCenter(selectedIndex, 'smooth');
-    }, [selectedIndex]);
-
+    // ── render ───────────────────────────────────────────────────────────────
     return (
-        <div style={{
-            width: '100%',
-            height: 'calc(100vh - 80px)',
-            overflow: 'hidden',
-            display: 'flex',
-            position: 'relative'
-        }}>
+        <div style={{ width: '100%', height: 'calc(100vh - 80px)', overflow: 'hidden', display: 'flex' }}>
             <div style={{ display: 'flex', width: '100%', height: '100%' }}>
-                {/* Left: Scrollable list of project cards */}
+                {/* Left: scrollable card list */}
                 <div
                     ref={containerRef}
                     className="projects-scroll-container"
                     style={{
-                        width: '50%',
-                        minWidth: 320,
-                        overflowX: 'hidden',
-                        overflowY: 'auto',
+                        width: '50%', minWidth: 320,
+                        overflowX: 'hidden', overflowY: 'auto',
                         padding: '0 2rem',
                         WebkitOverflowScrolling: 'touch',
-                        position: 'relative',
-                        scrollSnapType: window.innerWidth > 768 ? 'y mandatory' : 'none',
+                        scrollSnapType: isMobile() ? 'none' : 'y mandatory',
                         overscrollBehavior: 'contain',
-                        scrollBehavior: window.innerWidth > 768 ? 'smooth' : 'auto'
+                        scrollBehavior: isMobile() ? 'auto' : 'smooth',
                     }}
                 >
-                    <div ref={wrapperRef} style={{
-                        maxWidth: '900px',
-                        margin: '0 auto',
-                        width: '90%'
-                    }}>
-                        {projects.map((project, index) => (
-                            <div key={index} ref={el => { itemRefs.current[index] = el; }} style={{
-                                scrollSnapAlign: 'center',
-                                transition: 'transform 380ms cubic-bezier(0.2,0.8,0.2,1), opacity 300ms',
-                                transform: index === selectedIndex ? 'scale(1.03)' : 'scale(1)',
-                                opacity: index === selectedIndex ? 1 : 0.96
-                            }}>
+                    <div ref={wrapperRef} style={{ maxWidth: 900, margin: '0 auto', width: '90%' }}>
+                        {PROJECTS.map((project, index) => (
+                            <div
+                                key={project.title}
+                                ref={el => { itemRefs.current[index] = el; }}
+                                style={{
+                                    scrollSnapAlign: 'center',
+                                    transition: 'transform 380ms cubic-bezier(0.2,0.8,0.2,1), opacity 300ms',
+                                    transform: index === selectedIndex ? 'scale(1.03)' : 'scale(1)',
+                                    opacity: index === selectedIndex ? 1 : 0.96,
+                                }}
+                            >
                                 <ProjectBox
                                     title={project.title}
                                     description={project.description}
@@ -414,56 +227,19 @@ function Projects() {
                     </div>
                 </div>
 
-                {/* Right: Image / preview panel */}
-                <div className="projects-preview-column" style={{
-                    width: '50%',
-                    minWidth: 320,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '2rem',
-                    boxSizing: 'border-box'
-                }}>
-                    <div className="projects-preview" style={{ textAlign: 'center', width: '100%', maxWidth: '900px' }}>
-                        <div className="preview-frame" style={{
-                            borderRadius: 14,
-                            overflow: 'hidden',
-                            boxShadow: 'none',           // removed shadow
-                            background: 'transparent',   // make frame transparent
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}>
+                {/* Right: preview panel */}
+                <div className="projects-preview-column" style={{ width: '50%', minWidth: 320, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', boxSizing: 'border-box' }}>
+                    <div className="projects-preview" style={{ textAlign: 'center', width: '100%', maxWidth: 900 }}>
+                        <div className="preview-frame" style={{ borderRadius: 14, overflow: 'hidden', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <img
                                 className="preview-image"
                                 src={previewSrc}
                                 alt={displayProject.title}
-                                style={{
-                                    width: 'auto',
-                                    maxWidth: '100%',
-                                    height: '100%',
-                                    maxHeight: 'calc(100vh - 200px)',
-                                    display: 'block',
-                                    background: 'transparent',
-                                    objectFit: 'contain',
-                                    objectPosition: 'center',
-                                    opacity: imgOpacity,
-                                    transition: `opacity ${fadeDuration}ms ease-in-out`
-                                }}
+                                style={{ width: 'auto', maxWidth: '100%', height: '100%', maxHeight: 'calc(100vh - 200px)', display: 'block', objectFit: 'contain', objectPosition: 'center', opacity: imgOpacity, transition: `opacity ${FADE}ms ease-in-out` }}
                             />
                         </div>
-                        <h3 style={{
-                            marginTop: '1rem',
-                            opacity: textOpacity,
-                            transform: `translateY(${textOpacity === 1 ? 0 : 6}px)`,
-                            transition: `opacity ${fadeDuration}ms ease-in-out, transform ${fadeDuration}ms ease-in-out`
-                        }}>{previewTitle}</h3>
-                        <p style={{
-                            color: '#666',
-                            opacity: textOpacity,
-                            transform: `translateY(${textOpacity === 1 ? 0 : 6}px)`,
-                            transition: `opacity ${fadeDuration}ms ease-in-out, transform ${fadeDuration}ms ease-in-out`
-                        }}>{previewDesc}</p>
+                        <h3 style={{ marginTop: '1rem', opacity: textOpacity, transform: `translateY(${textOpacity === 1 ? 0 : 6}px)`, transition: `opacity ${FADE}ms ease-in-out, transform ${FADE}ms ease-in-out` }}>{previewTitle}</h3>
+                        <p style={{ color: '#666', opacity: textOpacity, transform: `translateY(${textOpacity === 1 ? 0 : 6}px)`, transition: `opacity ${FADE}ms ease-in-out, transform ${FADE}ms ease-in-out` }}>{previewDesc}</p>
                     </div>
                 </div>
             </div>
