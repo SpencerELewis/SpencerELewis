@@ -15,7 +15,7 @@ const PROJECTS = [
 ];
 
 const FADE = 320; // preview crossfade duration ms
-const MOBILE_BP = 768;
+const MOBILE_BP = 768; // mobile breakpoint in px
 const isMobile = () => window.innerWidth <= MOBILE_BP;
 
 function Projects() {
@@ -262,11 +262,12 @@ function Projects() {
                             <div
                                 key={project.title}
                                 ref={el => { itemRefs.current[index] = el; }}
+                                onClick={() => { setSelectedIndex(index); scrollToCenter(index); }}
                                 style={{
                                     scrollSnapAlign: 'center',
                                     transition: 'transform 380ms cubic-bezier(0.2,0.8,0.2,1), opacity 300ms',
-                                    transform: index === selectedIndex ? 'scale(1.03)' : 'scale(1)',
-                                    opacity: index === selectedIndex ? 1 : 0.96,
+                                    transform: (!isMobile() && index === selectedIndex) ? 'scale(1.03)' : 'scale(1)',
+                                    opacity: (!isMobile() && index === selectedIndex) ? 1 : isMobile() ? 1 : 0.96,
                                 }}
                             >
                                 <ProjectBox

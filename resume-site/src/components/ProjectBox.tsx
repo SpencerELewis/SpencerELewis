@@ -31,24 +31,20 @@ const TECH_ICONS: Record<string, { icon: string; color: string }> = {
 };
 
 const ProjectBox: React.FC<ProjectBoxProps> = ({ title, description, techs = [], isSelected }) => {
-    // hover effect removed — only the centered (selected) card receives emphasis
     return (
-        <div className="project-card"
+        <div className={`project-card${isSelected ? ' project-card--selected' : ''}`}
             style={{
                 borderRadius: '20px',
-                boxShadow: isSelected ? '0 14px 88px rgba(0,0,0,0.22)' : '0 6px 36px rgba(0,0,0,0.12)',
                 background: 'var(--bs-navbar-bg, var(--bs-body-bg, #fff))',
                 padding: '2.5rem',
                 margin: '2rem 0',
                 display: 'flex',
                 alignItems: 'flex-start',
                 gap: '2.5rem',
-                transition: 'box-shadow 340ms cubic-bezier(0.2,0.8,0.2,1), transform 300ms',
                 minHeight: '260px',
                 width: '100%',
-                cursor: 'default',
+                cursor: 'pointer',
                 userSelect: 'none',
-                transform: 'scale(1)'
             }}
         >
             <div style={{ flex: 1 }}>
