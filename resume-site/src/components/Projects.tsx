@@ -130,9 +130,30 @@ function Projects() {
             });
         };
 
-        // Forward external wheel events into the container
+        // Mouse wheel: discrete large deltaY (≥ 50px) or LINE deltaMode → step one item at a time
+        const isMouseWheel = (e: WheelEvent) => e.deltaMode === 1 || Math.abs(e.deltaY) >= 50;
+        const wheelCooldown = { current: false };
+        const stepByWheel = (direction: number) => {
+            if (wheelCooldown.current) return;
+            wheelCooldown.current = true;
+            window.setTimeout(() => { wheelCooldown.current = false; }, 80);
+            const cur = selectedIndexRef.current;
+            const last = PROJECTS.length - 1;
+            const nxt = direction > 0 ? Math.min(last, cur + 1) : Math.max(0, cur - 1);
+            if (nxt !== cur) { setSelectedIndex(nxt); scrollToCenter(nxt); }
+        };
+
+        // Intercept mouse wheel events on the container so each notch = exactly one card
+        const onWheelContainer = (e: WheelEvent) => {
+            if (!isMouseWheel(e)) return; // touchpad: let native scroll + CSS snap handle it
+            e.preventDefault();
+            stepByWheel(e.deltaY);
+        };
+
+        // Forward external wheel events (right panel, etc.) into the container
         const onWheelGlobal = (e: WheelEvent) => {
             if (!container || container.contains(e.target as Node) || Math.abs(e.deltaY) < 0.5) return;
+            if (isMouseWheel(e)) { stepByWheel(e.deltaY); return; }
             container.scrollBy({ top: e.deltaY, behavior: 'auto' });
         };
 
@@ -140,6 +161,7 @@ function Projects() {
         const onTouchEnd = () => { isTouching.current = false; scheduleSnap(findClosest(), 120); };
 
         container.addEventListener('scroll', onScroll, { passive: true });
+        container.addEventListener('wheel', onWheelContainer, { passive: false });
         window.addEventListener('wheel', onWheelGlobal, { passive: true });
         container.addEventListener('touchstart', onTouchStart, { passive: true });
         container.addEventListener('touchend', onTouchEnd, { passive: true });
@@ -148,6 +170,7 @@ function Projects() {
 
         return () => {
             container.removeEventListener('scroll', onScroll);
+            container.removeEventListener('wheel', onWheelContainer);
             window.removeEventListener('wheel', onWheelGlobal);
             container.removeEventListener('touchstart', onTouchStart);
             container.removeEventListener('touchend', onTouchEnd);
