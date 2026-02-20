@@ -3,15 +3,15 @@ import ProjectBox from './ProjectBox';
 import '../styles/projects.css';
 
 const PROJECTS = [
-    { title: "JerichOS",            description: "A x86 Operating System currently in development.",                                                                imageDescription: "Exploring low-level OS concepts, bootloaders, and memory.",           techs: ["C", "Assembly", "Operating Systems"],  image: "/cards/jerOS2.png" },
-    { title: "BananaCam",           description: "A machine learning powered webcam filter app for identifying bananas in real time.",                             imageDescription: "Real-time object detection using webcam and ML models.",             techs: ["Python", "TensorFlow", "OpenCV"],       image: "/cards/bancam.png" },
-    { title: "TokenGuard",          description: "A middleware service for assessing risk and preventing stolen tokens from accessing APIs based on IPs.",          imageDescription: "Risk-based token validation and IP-based controls.",                 techs: ["Node.js", "Express", "Security"],       image: "/assets/resume-thumb.png" },
-    { title: "CornCob Compiler",    description: "The CornCob Compiler is a program language compiler developed to compile my professors CornCob programming language into LLVM.", imageDescription: "Compiler front-end and LLVM IR code generation.",  techs: ["LLVM", "Compilers", "C++"],             image: "/assets/website-thumb.png" },
-    { title: "BOM CAT",             description: "A Bill of Materials machine learning categorization tool that I lead a team to build for our capstone for DMSI.", imageDescription: "Automated BOM categorization with ML models.",                       techs: ["Python", "PyTorch", "ML"],              image: "/assets/resume-thumb.png" },
-    { title: "RateMyClass",         description: "A MVC weba application that allows users to rate and review their classes and professors.",                      imageDescription: "Course & instructor ratings with user accounts.",                    techs: ["ASP.NET", "MVC", "SQL"],                image: "/assets/website-thumb.png" },
-    { title: "UML Diagram Generator", description: "A tool for generating UML diagrams from a structured text input.",                                             imageDescription: "Text-to-UML rendering with SVG export.",                             techs: ["TypeScript", "D3", "SVG"],              image: "/assets/resume-thumb.png" },
-    { title: "Field Vision",        description: "A Virtual Reality application for recruitment events that was developed as part of my first capstone.",           imageDescription: "Recruitment VR experience with interactive scenes.",                 techs: ["Unity", "C#", "VR"],                    image: "/assets/website-thumb.png" },
-    { title: "Eye Tracking Experiment", description: "An experiment I ran as part of a class to analyze the effects of coding themes in IDEs on eye tracking metrics.", imageDescription: "Study of IDE themes and eye behavior during coding tasks.",    techs: ["Python", "Eye Tracking", "Research"],   image: "/assets/resume-thumb.png" },
+    { title: "JerichOS", description: "A x86 Operating System currently in development.", imageDescription: "Exploring low-level OS concepts, bootloaders, and memory.", techs: ["C", "Assembly", "Operating Systems"], image: "/cards/jerOS2.png" },
+    { title: "BananaCam", description: "A machine learning powered webcam filter app for identifying bananas in real time.", imageDescription: "Real-time object detection using webcam and ML models.", techs: ["Python", "TensorFlow", "OpenCV"], image: "/cards/bancam.png" },
+    { title: "TokenGuard", description: "A middleware service for assessing risk and preventing stolen tokens from accessing APIs based on IPs.", imageDescription: "Risk-based token validation and IP-based controls.", techs: ["Node.js", "Express", "Security"], image: "/assets/resume-thumb.png" },
+    { title: "CornCob Compiler", description: "The CornCob Compiler is a program language compiler developed to compile my professors CornCob programming language into LLVM.", imageDescription: "Compiler front-end and LLVM IR code generation.", techs: ["LLVM", "Compilers", "C++"], image: "/assets/website-thumb.png" },
+    { title: "BOM CAT", description: "A Bill of Materials machine learning categorization tool that I lead a team to build for our capstone for DMSI.", imageDescription: "Automated BOM categorization with ML models.", techs: ["Python", "PyTorch", "ML"], image: "/assets/resume-thumb.png" },
+    { title: "RateMyClass", description: "A MVC weba application that allows users to rate and review their classes and professors.", imageDescription: "Course & instructor ratings with user accounts.", techs: ["ASP.NET", "MVC", "SQL"], image: "/assets/website-thumb.png" },
+    { title: "UML Diagram Generator", description: "A tool for generating UML diagrams from a structured text input.", imageDescription: "Text-to-UML rendering with SVG export.", techs: ["TypeScript", "D3", "SVG"], image: "/assets/resume-thumb.png" },
+    { title: "Field Vision", description: "A Virtual Reality application for recruitment events that was developed as part of my first capstone.", imageDescription: "Recruitment VR experience with interactive scenes.", techs: ["Unity", "C#", "VR"], image: "/assets/website-thumb.png" },
+    { title: "Eye Tracking Experiment", description: "An experiment I ran as part of a class to analyze the effects of coding themes in IDEs on eye tracking metrics.", imageDescription: "Study of IDE themes and eye behavior during coding tasks.", techs: ["Python", "Eye Tracking", "Research"], image: "/assets/resume-thumb.png" },
 ];
 
 const FADE = 320; // preview crossfade duration ms
@@ -20,12 +20,16 @@ const isMobile = () => window.innerWidth <= MOBILE_BP;
 
 function Projects() {
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const rootRef = useRef<HTMLDivElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
-    const keyboardEnabled = useRef(false);
     const selectedIndexRef = useRef(selectedIndex);
     useEffect(() => { selectedIndexRef.current = selectedIndex; }, [selectedIndex]);
+    // Shared flag: true while any programmatic scrollToCenter is animating.
+    // Prevents the onScroll live-updater from clobbering the target index.
+    const isAnimating = useRef(false);
+    let animatingClearTimer: number | null = null;
 
     // ── preview crossfade ────────────────────────────────────────────────────
     const displayProject = PROJECTS[selectedIndex];
@@ -84,6 +88,24 @@ function Projects() {
         container.scrollTo({ top: el.offsetTop - (container.clientHeight / 2 - el.clientHeight / 2), behavior });
     };
 
+    // ── core navigation ───────────────────────────────────────────────────────
+    // All input sources funnel here. Never touch native scroll — everything is
+    // programmatic so there's nothing to debounce or snap back from.
+    const navigateTo = (index: number, behavior: ScrollBehavior = 'smooth') => {
+        // Mark animating so the scroll listener doesn't update selectedIndex mid-animation
+        isAnimating.current = true;
+        if (animatingClearTimer) window.clearTimeout(animatingClearTimer);
+        animatingClearTimer = window.setTimeout(() => { isAnimating.current = false; }, 700);
+        setSelectedIndex(index);
+        scrollToCenter(index, behavior);
+    };
+
+    const navigate = (delta: number) => {
+        const cur = selectedIndexRef.current;
+        const nxt = Math.max(0, Math.min(PROJECTS.length - 1, cur + delta));
+        if (nxt !== cur) navigateTo(nxt);
+    };
+
     useEffect(() => {
         recalcPadding();
         scrollToCenter(selectedIndex, 'auto');
@@ -92,16 +114,28 @@ function Projects() {
         return () => window.removeEventListener('resize', onResize);
     }, []);
 
-    // ── scroll snapping on desktop ───────────────────────────────────────────
+    // ── wheel / touchpad (covers whole component via rootRef) ─────────────────
     useEffect(() => {
+        const root = rootRef.current;
         const container = containerRef.current;
-        if (!container || isMobile()) return;
+        if (!root || !container || isMobile()) return;
 
-        const scrollEndTimer = { current: null as number | null };
-        // Prevent our own scrollToCenter calls from re-triggering the snap debounce.
-        const isProgrammatic = { current: false };
-        let programmaticTimer: number | null = null;
+        // LINE deltaMode, or ≥100px round-number (Windows mouse sends 120px/notch).
+        // Touchpads send fractional or small pixel values.
+        const isMouseWheel = (e: WheelEvent) =>
+            e.deltaMode === 1 || (Number.isInteger(e.deltaY) && Math.abs(e.deltaY) >= 100);
 
+        // ── isSnapping: true while WE are animating so the scroll listener
+        //    doesn't try to snap on top of our own programmatic scrollTo. ──────
+        const isSnapping = { current: false };
+        let snapClearTimer: number | null = null;
+        const markSnapping = () => {
+            isSnapping.current = true;
+            if (snapClearTimer) window.clearTimeout(snapClearTimer);
+            snapClearTimer = window.setTimeout(() => { isSnapping.current = false; }, 700);
+        };
+
+        // Nearest card to the container's visible centre
         const findClosest = () => {
             const mid = container.getBoundingClientRect().top + container.clientHeight / 2;
             let idx = 0, best = Infinity;
@@ -113,135 +147,73 @@ function Projects() {
             return idx;
         };
 
-        const doSnap = () => {
+        const snapToNearest = () => {
             const closest = findClosest();
-            // Mark programmatic so the scroll events from scrollToCenter don't re-trigger us.
-            isProgrammatic.current = true;
-            if (programmaticTimer) window.clearTimeout(programmaticTimer);
-            programmaticTimer = window.setTimeout(() => { isProgrammatic.current = false; }, 600);
-            // Always update index AND scroll to center — without the scrollTo the container
-            // stays wherever momentum left it even though the highlight moved.
-            setSelectedIndex(closest);
-            scrollToCenter(closest, 'smooth');
+            markSnapping();
+            navigateTo(closest);
         };
 
-        // `scrollend` fires only when momentum has fully settled (no mid-fling false triggers).
-        // Fall back to a short debounce on browsers that don't support it yet.
-        const supportsScrollEnd = 'onscrollend' in window;
-
-        const scheduleSnap = (delay = 150) => {
-            if (scrollEndTimer.current) window.clearTimeout(scrollEndTimer.current);
-            scrollEndTimer.current = window.setTimeout(() => {
-                doSnap();
-                scrollEndTimer.current = null;
-            }, delay);
+        // ── touchpad: drive the container natively; snap 120ms after last event ─
+        let snapDebounce: number | null = null;
+        const scheduleSnap = () => {
+            if (snapDebounce) window.clearTimeout(snapDebounce);
+            snapDebounce = window.setTimeout(() => {
+                if (!isSnapping.current) snapToNearest();
+            }, 120);
         };
 
-        const onScrollEnd = () => {
-            if (isProgrammatic.current) return;
-            if (scrollEndTimer.current) { window.clearTimeout(scrollEndTimer.current); scrollEndTimer.current = null; }
-            doSnap();
-        };
-
-        // Only used as fallback on browsers without scrollend.
-        let ticking = false;
+        // Keep selected-card highlight in sync while finger is still moving
+        let scrollRaf: number | null = null;
         const onScroll = () => {
-            if (isProgrammatic.current) return;
-            if (supportsScrollEnd) return; // scrollend handles it
-            if (ticking) return;
-            ticking = true;
-            window.requestAnimationFrame(() => {
-                ticking = false;
-                scheduleSnap(150);
+            if (isSnapping.current || isAnimating.current) return;
+            if (scrollRaf) return;
+            scrollRaf = requestAnimationFrame(() => {
+                scrollRaf = null;
+                setSelectedIndex(findClosest());
             });
         };
 
-        // Mouse wheel: LINE deltaMode, or pixel-mode with an integer delta ≥ 100px (Windows default
-        // sends 120px/notch as a whole number). Touchpads report fractional deltas and smaller values,
-        // so requiring both Number.isInteger and ≥ 100 keeps smooth touchpad scrolling unaffected.
-        const isMouseWheel = (e: WheelEvent) => e.deltaMode === 1 || (Number.isInteger(e.deltaY) && Math.abs(e.deltaY) >= 100);
-        const wheelCooldown = { current: false };
-        const stepByWheel = (direction: number) => {
-            if (wheelCooldown.current) return;
-            wheelCooldown.current = true;
-            window.setTimeout(() => { wheelCooldown.current = false; }, 100);
-            const cur = selectedIndexRef.current;
-            const last = PROJECTS.length - 1;
-            const nxt = direction > 0 ? Math.min(last, cur + 1) : Math.max(0, cur - 1);
-            if (nxt === cur) return;
-            isProgrammatic.current = true;
-            if (programmaticTimer) window.clearTimeout(programmaticTimer);
-            programmaticTimer = window.setTimeout(() => { isProgrammatic.current = false; }, 600);
-            setSelectedIndex(nxt);
-            scrollToCenter(nxt);
-        };
-
-        // Intercept mouse wheel events on the container so each notch = exactly one card
-        const onWheelContainer = (e: WheelEvent) => {
-            if (!isMouseWheel(e)) return; // touchpad: let native scroll + CSS snap handle it
+        const onWheel = (e: WheelEvent) => {
             e.preventDefault();
-            stepByWheel(e.deltaY);
-        };
-
-        // Forward external wheel events (right panel, etc.) into the container
-        const onWheelGlobal = (e: WheelEvent) => {
-            if (!container || container.contains(e.target as Node) || Math.abs(e.deltaY) < 0.5) return;
-            if (isMouseWheel(e)) { stepByWheel(e.deltaY); return; }
-            // Touchpad from outside: suppress the immediate synchronous scrollend that
-            // behavior:'auto' fires, then let the 200ms debounce handle the final snap.
-            isProgrammatic.current = true;
-            container.scrollBy({ top: e.deltaY, behavior: 'auto' });
-            window.setTimeout(() => { isProgrammatic.current = false; }, 0);
-            scheduleSnap(200);
+            if (isMouseWheel(e)) {
+                // Mouse wheel: one notch = one card, focus is always on a card.
+                markSnapping();
+                navigate(Math.sign(e.deltaY));
+                return;
+            }
+            // Touchpad: drive the container natively; snap on release.
+            container.scrollBy({ top: e.deltaY, behavior: 'instant' });
+            scheduleSnap();
         };
 
         container.addEventListener('scroll', onScroll, { passive: true });
-        if (supportsScrollEnd) container.addEventListener('scrollend', onScrollEnd, { passive: true });
-        container.addEventListener('wheel', onWheelContainer, { passive: false });
-        window.addEventListener('wheel', onWheelGlobal, { passive: true });
-
+        root.addEventListener('wheel', onWheel, { passive: false });
         return () => {
             container.removeEventListener('scroll', onScroll);
-            if (supportsScrollEnd) container.removeEventListener('scrollend', onScrollEnd);
-            container.removeEventListener('wheel', onWheelContainer);
-            window.removeEventListener('wheel', onWheelGlobal);
-            if (scrollEndTimer.current) window.clearTimeout(scrollEndTimer.current);
-            if (programmaticTimer) window.clearTimeout(programmaticTimer);
+            root.removeEventListener('wheel', onWheel);
+            if (snapClearTimer) window.clearTimeout(snapClearTimer);
+            if (snapDebounce) window.clearTimeout(snapDebounce);
+            if (scrollRaf) cancelAnimationFrame(scrollRaf);
         };
     }, []);
 
-    // ── keyboard navigation ──────────────────────────────────────────────────
+    // ── keyboard navigation ───────────────────────────────────────────────────
     useEffect(() => {
-        const onDocClick = () => { keyboardEnabled.current = true; };
         const onKey = (e: KeyboardEvent) => {
-            if (!keyboardEnabled.current) return;
-            const tag = ((document.activeElement as HTMLElement)?.tagName || '').toLowerCase();
+            const tag = ((document.activeElement as HTMLElement)?.tagName ?? '').toLowerCase();
             if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
-
-            const cur = selectedIndexRef.current;
-            const last = PROJECTS.length - 1;
-            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
-                e.preventDefault();
-                const nxt = Math.min(last, cur + 1);
-                if (nxt !== cur) { setSelectedIndex(nxt); scrollToCenter(nxt); }
-            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-                e.preventDefault();
-                const prv = Math.max(0, cur - 1);
-                if (prv !== cur) { setSelectedIndex(prv); scrollToCenter(prv); }
-            } else if (e.key === 'Home') {
-                e.preventDefault(); setSelectedIndex(0); scrollToCenter(0);
-            } else if (e.key === 'End') {
-                e.preventDefault(); setSelectedIndex(last); scrollToCenter(last);
-            }
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); navigate(1); }
+            else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); navigate(-1); }
+            else if (e.key === 'Home') { e.preventDefault(); navigateTo(0); }
+            else if (e.key === 'End') { e.preventDefault(); navigateTo(PROJECTS.length - 1); }
         };
-        document.addEventListener('click', onDocClick);
         window.addEventListener('keydown', onKey);
-        return () => { document.removeEventListener('click', onDocClick); window.removeEventListener('keydown', onKey); };
+        return () => window.removeEventListener('keydown', onKey);
     }, []);
 
     // ── render ───────────────────────────────────────────────────────────────
     return (
-        <div style={{ width: '100%', height: 'calc(100vh - 80px)', overflow: 'hidden', display: 'flex' }}>
+        <div ref={rootRef} style={{ width: '100%', height: 'calc(100vh - 80px)', overflow: 'hidden', display: 'flex' }}>
             <div style={{ display: 'flex', width: '100%', height: '100%' }}>
                 {/* Left: scrollable card list */}
                 <div
@@ -262,7 +234,7 @@ function Projects() {
                             <div
                                 key={project.title}
                                 ref={el => { itemRefs.current[index] = el; }}
-                                onClick={() => { setSelectedIndex(index); scrollToCenter(index); }}
+                                onClick={() => navigateTo(index)}
                                 style={{
                                     scrollSnapAlign: 'center',
                                     transition: 'transform 380ms cubic-bezier(0.2,0.8,0.2,1), opacity 300ms',
