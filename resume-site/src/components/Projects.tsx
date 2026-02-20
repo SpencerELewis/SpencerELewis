@@ -98,7 +98,9 @@ function Projects() {
         if (!container || isMobile()) return;
 
         const scrollEndTimer = { current: null as number | null };
-        const isTouching = { current: false };
+        // Prevent our own scrollToCenter calls from re-triggering the snap debounce.
+        const isProgrammatic = { current: false };
+        let programmaticTimer: number | null = null;
 
         const findClosest = () => {
             const mid = container.getBoundingClientRect().top + container.clientHeight / 2;
@@ -111,36 +113,67 @@ function Projects() {
             return idx;
         };
 
-        const scheduleSnap = (closest: number, delay = 150) => {
+        const doSnap = () => {
+            const closest = findClosest();
+            // Mark programmatic so the scroll events from scrollToCenter don't re-trigger us.
+            isProgrammatic.current = true;
+            if (programmaticTimer) window.clearTimeout(programmaticTimer);
+            programmaticTimer = window.setTimeout(() => { isProgrammatic.current = false; }, 600);
+            // Always update index AND scroll to center — without the scrollTo the container
+            // stays wherever momentum left it even though the highlight moved.
+            setSelectedIndex(closest);
+            scrollToCenter(closest, 'smooth');
+        };
+
+        // `scrollend` fires only when momentum has fully settled (no mid-fling false triggers).
+        // Fall back to a short debounce on browsers that don't support it yet.
+        const supportsScrollEnd = 'onscrollend' in window;
+
+        const scheduleSnap = (delay = 150) => {
             if (scrollEndTimer.current) window.clearTimeout(scrollEndTimer.current);
             scrollEndTimer.current = window.setTimeout(() => {
-                if (closest !== selectedIndexRef.current) setSelectedIndex(closest);
-                else scrollToCenter(closest, 'smooth');
+                doSnap();
                 scrollEndTimer.current = null;
             }, delay);
         };
 
+        const onScrollEnd = () => {
+            if (isProgrammatic.current) return;
+            if (scrollEndTimer.current) { window.clearTimeout(scrollEndTimer.current); scrollEndTimer.current = null; }
+            doSnap();
+        };
+
+        // Only used as fallback on browsers without scrollend.
         let ticking = false;
         const onScroll = () => {
+            if (isProgrammatic.current) return;
+            if (supportsScrollEnd) return; // scrollend handles it
             if (ticking) return;
             ticking = true;
             window.requestAnimationFrame(() => {
                 ticking = false;
-                scheduleSnap(findClosest());
+                scheduleSnap(150);
             });
         };
 
-        // Mouse wheel: discrete large deltaY (≥ 50px) or LINE deltaMode → step one item at a time
-        const isMouseWheel = (e: WheelEvent) => e.deltaMode === 1 || Math.abs(e.deltaY) >= 50;
+        // Mouse wheel: LINE deltaMode, or pixel-mode with an integer delta ≥ 100px (Windows default
+        // sends 120px/notch as a whole number). Touchpads report fractional deltas and smaller values,
+        // so requiring both Number.isInteger and ≥ 100 keeps smooth touchpad scrolling unaffected.
+        const isMouseWheel = (e: WheelEvent) => e.deltaMode === 1 || (Number.isInteger(e.deltaY) && Math.abs(e.deltaY) >= 100);
         const wheelCooldown = { current: false };
         const stepByWheel = (direction: number) => {
             if (wheelCooldown.current) return;
             wheelCooldown.current = true;
-            window.setTimeout(() => { wheelCooldown.current = false; }, 80);
+            window.setTimeout(() => { wheelCooldown.current = false; }, 100);
             const cur = selectedIndexRef.current;
             const last = PROJECTS.length - 1;
             const nxt = direction > 0 ? Math.min(last, cur + 1) : Math.max(0, cur - 1);
-            if (nxt !== cur) { setSelectedIndex(nxt); scrollToCenter(nxt); }
+            if (nxt === cur) return;
+            isProgrammatic.current = true;
+            if (programmaticTimer) window.clearTimeout(programmaticTimer);
+            programmaticTimer = window.setTimeout(() => { isProgrammatic.current = false; }, 600);
+            setSelectedIndex(nxt);
+            scrollToCenter(nxt);
         };
 
         // Intercept mouse wheel events on the container so each notch = exactly one card
@@ -154,29 +187,26 @@ function Projects() {
         const onWheelGlobal = (e: WheelEvent) => {
             if (!container || container.contains(e.target as Node) || Math.abs(e.deltaY) < 0.5) return;
             if (isMouseWheel(e)) { stepByWheel(e.deltaY); return; }
+            // Touchpad from outside: suppress the immediate synchronous scrollend that
+            // behavior:'auto' fires, then let the 200ms debounce handle the final snap.
+            isProgrammatic.current = true;
             container.scrollBy({ top: e.deltaY, behavior: 'auto' });
+            window.setTimeout(() => { isProgrammatic.current = false; }, 0);
+            scheduleSnap(200);
         };
 
-        const onTouchStart = () => { isTouching.current = true; if (scrollEndTimer.current) { window.clearTimeout(scrollEndTimer.current); scrollEndTimer.current = null; } };
-        const onTouchEnd = () => { isTouching.current = false; scheduleSnap(findClosest(), 120); };
-
         container.addEventListener('scroll', onScroll, { passive: true });
+        if (supportsScrollEnd) container.addEventListener('scrollend', onScrollEnd, { passive: true });
         container.addEventListener('wheel', onWheelContainer, { passive: false });
         window.addEventListener('wheel', onWheelGlobal, { passive: true });
-        container.addEventListener('touchstart', onTouchStart, { passive: true });
-        container.addEventListener('touchend', onTouchEnd, { passive: true });
-        container.addEventListener('pointerdown', onTouchStart, { passive: true });
-        container.addEventListener('pointerup', onTouchEnd, { passive: true });
 
         return () => {
             container.removeEventListener('scroll', onScroll);
+            if (supportsScrollEnd) container.removeEventListener('scrollend', onScrollEnd);
             container.removeEventListener('wheel', onWheelContainer);
             window.removeEventListener('wheel', onWheelGlobal);
-            container.removeEventListener('touchstart', onTouchStart);
-            container.removeEventListener('touchend', onTouchEnd);
-            container.removeEventListener('pointerdown', onTouchStart);
-            container.removeEventListener('pointerup', onTouchEnd);
             if (scrollEndTimer.current) window.clearTimeout(scrollEndTimer.current);
+            if (programmaticTimer) window.clearTimeout(programmaticTimer);
         };
     }, []);
 
@@ -222,7 +252,7 @@ function Projects() {
                         overflowX: 'hidden', overflowY: 'auto',
                         padding: '0 2rem',
                         WebkitOverflowScrolling: 'touch',
-                        scrollSnapType: isMobile() ? 'none' : 'y mandatory',
+                        scrollSnapType: 'none',
                         overscrollBehavior: 'contain',
                         scrollBehavior: isMobile() ? 'auto' : 'smooth',
                     }}
