@@ -27,7 +27,13 @@ const TECH_ICONS: Record<string, { icon: string; color: string }> = {
     'Scikit Learn': { icon: 'scikit.png', color: '#F7931E' },
     'Git': { icon: 'git.png', color: '#F05032' },
     'Plastic SCM': { icon: 'plasticscm.png', color: '#4CAF50' },
-    'TensorFlow': { icon: 'tensor.png', color: '#FF6F00' } as any // fallback if you add TF icon
+    'Assembly': { icon: 'icons8-assembly-48.png', color: '#6E5494' },
+    'LLVM': { icon: 'LLVM.png', color: '#C4C4C4' },
+    'antlr': { icon: 'antlr.svg', color: '#AA2B1D' },
+    'fastapi': { icon: 'fastapi.svg', color: '#009688' },
+    'docker': { icon: 'docker.png', color: '#2496ED' },
+    'postgres': { icon: 'postgres.svg', color: '#336791' },
+    'R' : { icon: 'r.png', color: '#276DC3' },
 };
 
 const ProjectBox: React.FC<ProjectBoxProps> = ({ title, description, techs = [], isSelected }) => {
