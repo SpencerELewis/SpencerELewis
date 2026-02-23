@@ -13,7 +13,7 @@ function Home() {
     { name: 'JavaScript', icon: 'javascript_im.png', color: '#F7DF1E' },
     { name: 'Java', icon: 'java_im.png', color: '#007396' },
     { name: 'React', icon: 'react.png', color: '#61DAFB' },
-    { name: '.NET', icon: '.net.png', color: '#512BD4' },
+    { name: '.NET', icon: 'dotnet.png', color: '#512BD4' },
     { name: 'SQL Server', icon: 'sqlserver.png', color: '#CC2927' },
     { name: 'ElasticSearch', icon: 'elasticsearch.png', color: '#005571' },
     { name: 'Python', icon: 'python_im.png', color: '#3776AB' },

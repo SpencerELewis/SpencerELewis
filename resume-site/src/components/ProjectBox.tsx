@@ -16,7 +16,7 @@ const TECH_ICONS: Record<string, { icon: string; color: string }> = {
     'JavaScript': { icon: 'javascript_im.png', color: '#F7DF1E' },
     'Java': { icon: 'java_im.png', color: '#007396' },
     'React': { icon: 'react.png', color: '#61DAFB' },
-    '.NET': { icon: '.net.png', color: '#512BD4' },
+    '.NET': { icon: 'dotnet.png', color: '#512BD4' },
     'SQL Server': { icon: 'sqlserver.png', color: '#CC2927' },
     'ElasticSearch': { icon: 'elasticsearch.png', color: '#005571' },
     'Python': { icon: 'python_im.png', color: '#3776AB' },
