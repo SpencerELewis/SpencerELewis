@@ -5,7 +5,27 @@
     <link rel="icon" type="image/png" href="./favicon_tab_icon_A.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spencer's Portfolio</title>
-    <script type="module" crossorigin src="/SpencerELewis/assets/index-yeOE7CsF.js"></script>
+    <script>
+      // Single Page Apps for GitHub Pages
+      // https://github.com/rafgraph/spa-github-pages
+      //
+      // Reads the path encoded into the query string by 404.html and restores
+      // it via history.replaceState so React Router sees the correct URL.
+      (function (l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search.slice(1).split('&').map(function (s) {
+            return s.replace(/~and~/g, '&');
+          });
+          window.history.replaceState(
+            null, null,
+            l.pathname.slice(0, -1) + decoded[0] +
+            (decoded[1] ? '?' + decoded[1] : '') +
+            l.hash
+          );
+        }
+      }(window.location));
+    </script>
+    <script type="module" crossorigin src="/SpencerELewis/assets/index-CwnYP-kp.js"></script>
     <link rel="stylesheet" crossorigin href="/SpencerELewis/assets/index-fWl1wIHA.css">
   </head>
   <body>
