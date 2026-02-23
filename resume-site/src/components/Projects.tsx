@@ -2,16 +2,18 @@ import { useEffect, useRef, useState } from 'react';
 import ProjectBox from './ProjectBox';
 import '../styles/projects.css';
 
+const BASE = import.meta.env.BASE_URL;
+
 const PROJECTS = [
-    { title: "JerichOS", description: "A x86 Operating System currently in development.", imageDescription: "Exploring low-level OS concepts, bootloaders, and memory.", techs: ["C", "Assembly"], image: "/cards/jerOS2.png" },
-    { title: "BananaCam", description: "A machine learning powered webcam filter app for identifying bananas in real time.", imageDescription: "Real-time object detection using webcam and ML models.", techs: ["Python", "Scikit Learn", "React", "TypeScript"], image: "/cards/bancam.png" },
-    { title: "TokenGuard", description: "A middleware service for assessing risk and preventing stolen tokens from accessing APIs based on IPs.", imageDescription: "Risk-based token validation and IP-based controls.", techs: ["React", "TypeScript", "C#", ".NET"], image: "/cards/tokenguard.png" },
-    { title: "CornCob Compiler", description: "The CornCob Compiler is a program language compiler developed to compile my professors CornCob programming language into LLVM.", imageDescription: "Compiler front-end and LLVM IR code generation.", techs: ["LLVM", "Python", "antlr"], image: "/cards/corncob.png" },
-    { title: "BOM CAT", description: "A Bill of Materials machine learning categorization tool that I lead a team to build for our capstone for DMSI.", imageDescription: "Automated BOM categorization with ML models.", techs: ["Python", "Scikit Learn", "fastapi", "React", "TypeScript", "postgres"], image: "/cards/dmsi.png" },
-    { title: "RateMyClass", description: "A MVC weba application that allows users to rate and review their classes and professors.", imageDescription: "Course & instructor ratings with user accounts.", techs: ["React", "TypeScript", "C#", ".NET", "docker", "SQL Server"], image: "/cards/ratemyclass.png" },
-    { title: "UML Diagram Generator", description: "A tool for generating UML diagrams from a structured text input.", imageDescription: "Text-to-UML rendering with SVG export.", techs: ["Python"], image: "/cards/uml-gen.png" },
-    { title: "Field Vision", description: "A Virtual Reality application for recruitment events that was developed as part of my first capstone.", imageDescription: "Recruitment VR experience with interactive scenes.", techs: ["Unity", "C#", "VR"], image: "/cards/kiewit.png" },
-    { title: "Eye Tracking Experiment", description: "An experiment I ran as part of a class to analyze the effects of coding themes in IDEs on eye tracking metrics.", imageDescription: "Study of IDE themes and eye behavior during coding tasks.", techs: ["R"], image: "/cards/eye-track.jpg" },
+    { title: "JerichOS", description: "A x86 Operating System currently in development.", imageDescription: "Exploring low-level OS concepts, bootloaders, and memory.", techs: ["C", "Assembly"], image: `${BASE}cards/jerOS2.png` },
+    { title: "BananaCam", description: "A machine learning powered webcam filter app for identifying bananas in real time.", imageDescription: "Real-time object detection using webcam and ML models.", techs: ["Python", "Scikit Learn", "React", "TypeScript"], image: `${BASE}cards/bancam.png` },
+    { title: "TokenGuard", description: "A middleware service for assessing risk and preventing stolen tokens from accessing APIs based on IPs.", imageDescription: "Risk-based token validation and IP-based controls.", techs: ["React", "TypeScript", "C#", ".NET"], image: `${BASE}cards/tokenguard.png` },
+    { title: "CornCob Compiler", description: "The CornCob Compiler is a program language compiler developed to compile my professors CornCob programming language into LLVM.", imageDescription: "Compiler front-end and LLVM IR code generation.", techs: ["LLVM", "Python", "antlr"], image: `${BASE}cards/corncob.png` },
+    { title: "BOM CAT", description: "A Bill of Materials machine learning categorization tool that I lead a team to build for our capstone for DMSI.", imageDescription: "Automated BOM categorization with ML models.", techs: ["Python", "Scikit Learn", "fastapi", "React", "TypeScript", "postgres"], image: `${BASE}cards/dmsi.png` },
+    { title: "RateMyClass", description: "A MVC weba application that allows users to rate and review their classes and professors.", imageDescription: "Course & instructor ratings with user accounts.", techs: ["React", "TypeScript", "C#", ".NET", "docker", "SQL Server"], image: `${BASE}cards/ratemyclass.png` },
+    { title: "UML Diagram Generator", description: "A tool for generating UML diagrams from a structured text input.", imageDescription: "Text-to-UML rendering with SVG export.", techs: ["Python"], image: `${BASE}cards/uml-gen.png` },
+    { title: "Field Vision", description: "A Virtual Reality application for recruitment events that was developed as part of my first capstone.", imageDescription: "Recruitment VR experience with interactive scenes.", techs: ["Unity", "C#", "VR"], image: `${BASE}cards/kiewit.png` },
+    { title: "Eye Tracking Experiment", description: "An experiment I ran as part of a class to analyze the effects of coding themes in IDEs on eye tracking metrics.", imageDescription: "Study of IDE themes and eye behavior during coding tasks.", techs: ["R"], image: `${BASE}cards/eye-track.jpg` },
 ];
 
 const FADE = 320; // preview crossfade duration ms

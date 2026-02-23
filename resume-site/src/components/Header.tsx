@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { Navbar, Container, Button, Nav } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
+const BASE = import.meta.env.BASE_URL;
+
 function Header() {
     const location = useLocation();
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -91,7 +93,7 @@ function Header() {
                             onPointerCancel={e => e.currentTarget.style.transform = 'scale(1)'}
                         >
                             <img
-                                src='/Favicon_Home_Black.svg'
+                                src={`${BASE}Favicon_Home_Black.svg`}
                                 alt="Home"
                                 style={{
                                     width: '24px',
@@ -125,7 +127,7 @@ function Header() {
                             onPointerCancel={e => e.currentTarget.style.transform = 'scale(1)'}
                         >
                             <img
-                                src='/favicon_project.png'
+                                src={`${BASE}favicon_project.png`}
                                 alt="Projects"
                                 style={{
                                     width: '24px',
@@ -159,7 +161,7 @@ function Header() {
                             onPointerCancel={e => e.currentTarget.style.transform = 'scale(1)'}
                         >
                             <img
-                                src='/favicon_resume.png'
+                                src={`${BASE}favicon_resume.png`}
                                 alt="Resume"
                                 style={{
                                     width: '24px',
@@ -191,7 +193,7 @@ function Header() {
                                 onPointerCancel={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
                                 <img
-                                    src='/favicon_linkedin.png'
+                                    src={`${BASE}favicon_linkedin.png`}
                                     alt="LinkedIn"
                                     style={{
                                         width: '24px',
@@ -218,7 +220,7 @@ function Header() {
                                 onPointerCancel={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
                                 <img
-                                    src='/favicon_github.png'
+                                    src={`${BASE}favicon_github.png`}
                                     alt="GitHub"
                                     style={{
                                         width: '24px',
@@ -245,7 +247,7 @@ function Header() {
                                 onPointerCancel={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
                                 <img
-                                    src={isDarkMode ? '/favicon_darkmode.png' : '/favicon_lightmode (2).png'}
+                                    src={isDarkMode ? `${BASE}favicon_darkmode.png` : `${BASE}favicon_lightmode (2).png`}
                                     alt="Toggle theme"
                                     style={{
                                         width: '24px',

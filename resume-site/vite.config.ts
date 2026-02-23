@@ -8,5 +8,6 @@ export default defineConfig({
     //port: 3000,
     open: true,
   },
-  base: "/SpencerELewis"
+  // include trailing slash so Vite appends paths correctly when the base URL changes
+  base: "/SpencerELewis/"
 })

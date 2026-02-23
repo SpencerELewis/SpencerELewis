@@ -1,5 +1,7 @@
 import React from 'react';
 
+const BASE = import.meta.env.BASE_URL;
+
 interface ProjectBoxProps {
     title: string;
     description: string;
@@ -64,7 +66,7 @@ const ProjectBox: React.FC<ProjectBoxProps> = ({ title, description, techs = [],
                                 <img
                                     className="project-tech-img"
                                     alt={t}
-                                    src={`/coding icons/${meta.icon}`}
+                                    src={`${BASE}coding icons/${meta.icon}`}
                                     style={{ filter: `drop-shadow(0 0 4px ${meta.color})`, width: 70, height: 70, objectFit: 'contain' }}
                                 />
                             </span>

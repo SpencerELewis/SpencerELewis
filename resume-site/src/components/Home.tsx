@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/home.css';
 
+const BASE = import.meta.env.BASE_URL;
+
 function Home() {
   // Technology icons with their labels
   const technologies = [
@@ -41,7 +43,7 @@ function Home() {
           {/* Central circular image */}
           <div className="center-circle">
             <div className="profile-image">
-              <img src="/SL-Prof-4.png" alt="Spencer Lewis" />
+              <img src={`${BASE}SL-Prof-4.png`} alt="Spencer Lewis" />
             </div>
           </div>
 
@@ -56,7 +58,7 @@ function Home() {
               >
                 <span className="tech-icon" style={{ filter: `drop-shadow(0 0 3px ${tech.color})` }}>
                   <img
-                    src={`/coding icons/${tech.icon}`}
+                    src={`${BASE}coding icons/${tech.icon}`}
                     alt={tech.name}
                     style={{ objectFit: 'contain' }}
                   />

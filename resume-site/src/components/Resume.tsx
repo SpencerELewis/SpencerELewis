@@ -12,7 +12,7 @@ function Resume() {
                 overflow: 'hidden'
             }}>
                 <iframe
-                    src="/assets/resume.pdf"
+                    src={`${import.meta.env.BASE_URL}assets/resume.pdf`}
                     style={{
                         width: '100%',
                         height: '100%',
